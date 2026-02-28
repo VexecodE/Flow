@@ -360,8 +360,8 @@ export function CollabClient() {
                         {/* Page Title */}
                         <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center shrink-0">
-                                    <Users className="w-6 h-6 text-indigo-600" />
+                                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center shrink-0">
+                                    <Users className="w-6 h-6 text-gray-900" />
                                 </div>
                                 <div>
                                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Collaboration Hub</h1>
@@ -384,13 +384,15 @@ export function CollabClient() {
                             {/* Main Content Area */}
                             <div className="lg:col-span-2 space-y-6">
                                 {/* Featured Opportunity */}
-                                <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 border border-indigo-700 shadow-soft p-6 sm:p-8 rounded-[32px] flex flex-col relative overflow-hidden group">
+                                <div className="bg-gray-900/40 backdrop-blur-xl border border-white/15 shadow-2xl p-6 sm:p-8 rounded-[32px] flex flex-col relative overflow-hidden group hover:bg-gray-900/50 transition-all duration-500">
+                                    {/* Glass highlight edge */}
+                                    <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
                                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
                                         <Code2 className="w-32 h-32 text-white" />
                                     </div>
                                     <div className="relative z-10 flex items-center gap-3 mb-4">
-                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
-                                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white/20 text-white border border-white/30 backdrop-blur-sm">
+                                            <Star className="w-3 h-3 fill-white text-white" />
                                             Active Co-founder Search
                                         </span>
                                     </div>
@@ -399,22 +401,22 @@ export function CollabClient() {
                                         SaaS AI Analytics Platform
                                     </h2>
 
-                                    <p className="relative z-10 text-indigo-100 text-sm leading-relaxed max-w-lg mb-6">
+                                    <p className="relative z-10 text-white/70 text-sm leading-relaxed max-w-lg mb-6">
                                         Looking for a backend architect to partner on a high-growth AI analytics tool. MVP is complete, beta customers are signed up. Offering a 50/50 revenue split and co-founder equity.
                                     </p>
 
                                     <div className="relative z-10 grid grid-cols-2 gap-3 mb-6">
-                                        <div className="bg-black/20 backdrop-blur-md rounded-xl p-3 border border-white/10">
-                                            <div className="text-[10px] uppercase font-bold text-indigo-300 mb-1">Required Skills</div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10">
+                                            <div className="text-[10px] uppercase font-bold text-gray-300 mb-1">Required Skills</div>
                                             <div className="text-sm font-bold text-white">Python, AWS, Postgres</div>
                                         </div>
-                                        <div className="bg-black/20 backdrop-blur-md rounded-xl p-3 border border-white/10">
-                                            <div className="text-[10px] uppercase font-bold text-indigo-300 mb-1">Compensation</div>
+                                        <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10">
+                                            <div className="text-[10px] uppercase font-bold text-gray-300 mb-1">Compensation</div>
                                             <div className="text-sm font-bold text-white">50% Rev Split + Equity</div>
                                         </div>
                                     </div>
 
-                                    <button className="relative z-10 mt-auto bg-white text-indigo-900 py-3.5 px-6 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors w-max shadow-lg">
+                                    <button className="relative z-10 mt-auto bg-white/90 backdrop-blur-sm text-gray-900 py-3.5 px-6 rounded-xl font-bold text-sm hover:bg-white flex items-center justify-center gap-2 transition-colors w-max shadow-lg">
                                         <MessageSquare className="w-4 h-4" /> Message Creator
                                     </button>
                                 </div>
@@ -423,7 +425,7 @@ export function CollabClient() {
                                 <div className="space-y-4">
                                     <h3 className="text-xl font-bold text-gray-900 tracking-tight flex items-center justify-between">
                                         Available Talent
-                                        <button className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors uppercase gap-1 flex items-center">
+                                        <button className="text-xs font-bold text-gray-900 hover:text-black transition-colors uppercase gap-1 flex items-center">
                                             View Map <ArrowRight className="w-3 h-3" />
                                         </button>
                                     </h3>
@@ -431,20 +433,20 @@ export function CollabClient() {
                                         <div
                                             key={i}
                                             onClick={() => openDeveloperProfile(dev)}
-                                            className="bg-white border border-gray-100 shadow-soft p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-soft-md hover:border-indigo-200 transition-all cursor-pointer group"
+                                            className="bg-white border border-gray-100 shadow-soft p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-soft-md hover:border-gray-300 transition-all cursor-pointer group"
                                         >
-                                            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-50 to-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-lg font-black text-indigo-700 shrink-0 group-hover:scale-105 transition-transform">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-gray-100 to-gray-50 border-2 border-white shadow-sm flex items-center justify-center text-lg font-black text-gray-900 shrink-0 group-hover:scale-105 transition-transform">
                                                 {dev.avatar}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                                                     <div className="flex items-center gap-2 flex-1 min-w-0">
                                                         <h4 className="text-base font-bold text-gray-900 truncate">{dev.name}</h4>
-                                                        <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 flex items-center gap-1 shrink-0">
+                                                        <span className="text-[10px] font-bold text-gray-700 bg-gray-50 px-2 py-0.5 rounded-full border border-gray-200 flex items-center gap-1 shrink-0">
                                                             Score: {dev.credibilityScore}
                                                         </span>
                                                     </div>
-                                                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 w-max shrink-0">
+                                                    <span className="text-xs font-bold text-gray-700 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-200 w-max shrink-0">
                                                         {dev.availability}
                                                     </span>
                                                 </div>
@@ -459,7 +461,7 @@ export function CollabClient() {
                                             </div>
                                             <div className="flex flex-col items-end gap-2 shrink-0 sm:w-32 border-t sm:border-t-0 sm:border-l border-gray-100 pt-3 sm:pt-0 sm:pl-5 w-full">
                                                 <div className="flex items-center gap-1">
-                                                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                                    <Star className="w-4 h-4 fill-gray-900 text-gray-900" />
                                                     <span className="text-sm font-bold text-gray-900">{dev.rating}</span>
                                                 </div>
                                                 <div className="text-[10px] font-bold uppercase text-gray-400 text-right">
@@ -487,11 +489,11 @@ export function CollabClient() {
                                     <p className="text-sm text-gray-500 font-medium mb-5 leading-relaxed">
                                         Looking for a co-creator? Describe your project, the skills you need, and how you want to share the revenue or equity.
                                     </p>
-                                    <button className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-soft transition-colors flex items-center justify-center gap-2">
+                                    <button className="w-full py-3.5 bg-gray-900 hover:bg-black text-white rounded-xl text-sm font-bold shadow-soft transition-colors flex items-center justify-center gap-2">
                                         <Briefcase className="w-4 h-4" /> Create Listing
                                     </button>
                                     <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                                        <a href="#" className="text-xs font-bold text-indigo-600 hover:underline">Learn about our Smart Contracts for Rev-Split</a>
+                                        <a href="#" className="text-xs font-bold text-gray-900 hover:underline">Learn about our Smart Contracts for Rev-Split</a>
                                     </div>
                                 </div>
 
@@ -501,8 +503,8 @@ export function CollabClient() {
                                     <div className="space-y-3">
                                         {pastCollaborations.slice(0, 3).map((collab) => {
                                             const statusColors = {
-                                                completed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                                active: 'bg-blue-50 text-blue-700 border-blue-200',
+                                                completed: 'bg-gray-100 text-gray-900 border-gray-300',
+                                                active: 'bg-gray-50 text-gray-700 border-gray-200',
                                                 paused: 'bg-gray-50 text-gray-600 border-gray-200'
                                             };
 
@@ -513,7 +515,7 @@ export function CollabClient() {
                                                             {collab.teamMembers.map((member, idx) => (
                                                                 <div
                                                                     key={idx}
-                                                                    className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-white"
+                                                                    className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-white"
                                                                     title={member.name}
                                                                 >
                                                                     {member.avatar}
@@ -534,7 +536,7 @@ export function CollabClient() {
                                                                     {collab.duration}
                                                                 </span>
                                                                 {collab.revenue && (
-                                                                    <span className="text-emerald-600 font-bold">• {collab.revenue}</span>
+                                                                    <span className="text-gray-900 font-bold">• {collab.revenue}</span>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -573,12 +575,12 @@ export function CollabClient() {
                                         >
                                             <div
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300"
+                                                className="bg-white/70 backdrop-blur-2xl rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300 border border-white/40"
                                             >
                                                 {/* Header */}
-                                                <div className="sticky top-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 p-6 flex items-start justify-between z-10">
+                                                <div className="sticky top-0 bg-white/60 backdrop-blur-xl border-b border-white/30 p-6 flex items-start justify-between z-10">
                                                     <div className="flex items-start gap-4">
-                                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 to-blue-500 border-4 border-white shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
+                                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-gray-800 to-gray-900 border-4 border-white/50 shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
                                                             {selectedDeveloper.avatar}
                                                         </div>
                                                         <div>
@@ -593,8 +595,8 @@ export function CollabClient() {
                                                                     <Calendar className="w-4 h-4" />
                                                                     {selectedDeveloper.experience} experience
                                                                 </div>
-                                                                <div className="flex items-center gap-1.5 text-sm font-bold text-amber-600">
-                                                                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                                                <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
+                                                                    <Star className="w-4 h-4 fill-gray-900 text-gray-900" />
                                                                     {selectedDeveloper.rating} rating
                                                                 </div>
                                                             </div>
@@ -602,7 +604,7 @@ export function CollabClient() {
                                                     </div>
                                                     <button
                                                         onClick={closeDeveloperProfile}
-                                                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors shrink-0"
+                                                        className="w-10 h-10 rounded-full bg-white/40 hover:bg-white/60 backdrop-blur-sm flex items-center justify-center transition-colors shrink-0 border border-white/30"
                                                     >
                                                         <X className="w-5 h-5 text-gray-600" />
                                                     </button>
@@ -621,7 +623,7 @@ export function CollabClient() {
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3">Skills & Technologies</h3>
                                                         <div className="flex flex-wrap gap-2">
                                                             {selectedDeveloper.skills.map(skill => (
-                                                                <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-lg">
+                                                                <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-white/50 border border-white/40 text-gray-900 px-3 py-2 rounded-lg backdrop-blur-sm">
                                                                     {skill}
                                                                 </span>
                                                             ))}
@@ -631,12 +633,12 @@ export function CollabClient() {
                                                     {/* Achievements */}
                                                     <div>
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                            <Award className="w-5 h-5 text-indigo-600" />
+                                                            <Award className="w-5 h-5 text-gray-900" />
                                                             Achievements
                                                         </h3>
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                             {selectedDeveloper.achievements.map((achievement, i) => (
-                                                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                                <div key={i} className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
                                                                     <p className="text-sm font-semibold text-gray-700">{achievement}</p>
                                                                 </div>
                                                             ))}
@@ -646,14 +648,14 @@ export function CollabClient() {
                                                     {/* Projects Portfolio */}
                                                     <div>
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                            <Code2 className="w-5 h-5 text-indigo-600" />
+                                                            <Code2 className="w-5 h-5 text-gray-900" />
                                                             Featured Projects
                                                         </h3>
                                                         <div className="grid grid-cols-1 gap-4">
                                                             {selectedDeveloper.projects.map((project, i) => (
-                                                                <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
+                                                                <div key={i} className="bg-white/30 border border-white/30 rounded-2xl p-5 hover:bg-white/50 hover:shadow-md transition-all backdrop-blur-sm">
                                                                     <div className="flex items-start gap-4">
-                                                                        <div className="w-16 h-16 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0">
+                                                                        <div className="w-16 h-16 bg-white/60 rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0 backdrop-blur-sm">
                                                                             {project.image}
                                                                         </div>
                                                                         <div className="flex-1">
@@ -664,7 +666,7 @@ export function CollabClient() {
                                                                                         href={project.link}
                                                                                         target="_blank"
                                                                                         rel="noopener noreferrer"
-                                                                                        className="text-indigo-600 hover:text-indigo-700 transition-colors"
+                                                                                        className="text-gray-600 hover:text-gray-900 transition-colors"
                                                                                         onClick={(e) => e.stopPropagation()}
                                                                                     >
                                                                                         <ExternalLink className="w-4 h-4" />
@@ -674,7 +676,7 @@ export function CollabClient() {
                                                                             <p className="text-sm text-gray-600 mb-3 leading-relaxed">{project.description}</p>
                                                                             <div className="flex flex-wrap gap-1.5">
                                                                                 {project.tech.map(tech => (
-                                                                                    <span key={tech} className="text-[10px] uppercase font-bold bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded">
+                                                                                    <span key={tech} className="text-[10px] uppercase font-bold bg-white/50 border border-white/30 text-gray-600 px-2 py-1 rounded">
                                                                                         {tech}
                                                                                     </span>
                                                                                 ))}
@@ -687,26 +689,26 @@ export function CollabClient() {
                                                     </div>
 
                                                     {/* Contact & Actions */}
-                                                    <div className="border-t border-gray-200 pt-6 space-y-4">
+                                                    <div className="border-t border-white/30 pt-6 space-y-4">
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3">Get in Touch</h3>
 
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                            <div className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
                                                                 <div className="text-xs font-bold uppercase text-gray-400 mb-1">Availability</div>
-                                                                <div className="text-sm font-bold text-emerald-600">{selectedDeveloper.availability}</div>
+                                                                <div className="text-sm font-bold text-gray-900">{selectedDeveloper.availability}</div>
                                                             </div>
-                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                            <div className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
                                                                 <div className="text-xs font-bold uppercase text-gray-400 mb-1">Compensation</div>
                                                                 <div className="text-sm font-bold text-gray-900">{selectedDeveloper.split}</div>
                                                             </div>
                                                         </div>
 
                                                         <div className="flex flex-wrap gap-3">
-                                                            <button className="flex-1 min-w-[200px] bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg">
+                                                            <button className="flex-1 min-w-[200px] bg-gray-900 hover:bg-black text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg">
                                                                 <MessageSquare className="w-4 h-4" />
                                                                 Send Message
                                                             </button>
-                                                            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
+                                                            <button className="bg-white/40 hover:bg-white/60 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 backdrop-blur-sm border border-white/30">
                                                                 <Mail className="w-4 h-4" />
                                                                 Email
                                                             </button>
@@ -727,7 +729,7 @@ export function CollabClient() {
                                                                     href={`https://linkedin.com/in/${selectedDeveloper.linkedin}`}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                                                                    className="bg-gray-700 hover:bg-gray-800 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
                                                                     onClick={(e) => e.stopPropagation()}
                                                                 >
                                                                     <Linkedin className="w-4 h-4" />

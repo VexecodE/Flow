@@ -77,7 +77,7 @@ export function ProjectsClient() {
                                     <p className="text-sm font-medium text-gray-500 mt-1">Manage and track your active developments and past works.</p>
                                 </div>
                             </div>
-                            <button className="whitespace-nowrap flex items-center gap-2 bg-primary text-white border border-primary px-6 py-3 rounded-xl text-sm font-bold shadow-soft hover:bg-primary/90 transition-all duration-300">
+                            <button className="whitespace-nowrap flex items-center gap-2 bg-gray-900 text-white border border-gray-900 px-6 py-3 rounded-xl text-sm font-bold shadow-soft hover:bg-black transition-all duration-300">
                                 <UploadCloud className="w-5 h-5" />
                                 Upload Recent Work
                             </button>
@@ -123,7 +123,7 @@ export function ProjectsClient() {
                                         <span>38%</span>
                                     </div>
                                     <div className="relative h-3 w-full overflow-hidden rounded-full bg-gray-100">
-                                        <div className="h-full w-[38%] rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+                                        <div className="h-full w-[38%] rounded-full bg-gradient-to-r from-gray-800 to-black"></div>
                                         <div className="pointer-events-none absolute inset-0 rounded-full border border-gray-200/50"></div>
                                     </div>
 
