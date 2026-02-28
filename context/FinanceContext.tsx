@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Building2, Landmark, CreditCard, Wallet, HomeIcon, Coffee, MonitorSmartphone, Plane, ShoppingBag, Target, Activity } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { TransactionAPI, checkBackendHealth } from '@/lib/api';
+import { InsightsAPI, SmartInsightsResponse } from '@/lib/insights-api';
 
 // --- Types ---
 
@@ -84,6 +86,8 @@ interface FinanceContextType {
     budgets: Budget[];
     subscriptions: Subscription[];
     goals: Goal[];
+    insights: SmartInsightsResponse | null;
+    insightsLoading: boolean;
 
     addTransaction: (txn: Omit<Transaction, "id" | "status">) => Promise<void>;
     syncExternalTransactions: (txns: Transaction[]) => void;
@@ -98,6 +102,7 @@ interface FinanceContextType {
     deleteSubscription: (id: string) => void;
     deleteGoal: (id: string) => void;
 
+    loadInsights: (days?: number, useAI?: boolean) => Promise<void>;
     getIconComponent: (iconName: string) => React.ElementType;
 }
 
@@ -136,10 +141,15 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [goals, setGoals] = useState<Goal[]>([]);
+    const [insights, setInsights] = useState<SmartInsightsResponse | null>(null);
+    const [insightsLoading, setInsightsLoading] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [dbError, setDbError] = useState<string | null>(null);
+    
+    // Check if backend API mode is enabled
+    const useBackendAPI = process.env.NEXT_PUBLIC_USE_BACKEND_API === 'true';
 
-    // Initial Load from Supabase — join transaction_items
+    // Initial Load from Supabase or Backend API
     useEffect(() => {
         const loadData = async () => {
             const { data: { user } } = await supabase.auth.getUser();
@@ -149,18 +159,53 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            const [txnRes, accRes, bgtRes, subRes, goalsRes] = await Promise.all([
-                supabase
+            // Load transactions from backend or Supabase
+            let txnData: any[] = [];
+            if (useBackendAPI) {
+                try {
+                    const isHealthy = await checkBackendHealth();
+                    if (isHealthy) {
+                        const backendTxns = await TransactionAPI.getAll({ user_id: user.id });
+                        txnData = backendTxns.map((txn: any) => ({
+                            ...txn,
+                            amount: Number(txn.amount),
+                            items: [],
+                            category_prices: undefined,
+                        }));
+                        console.log('✅ Loaded transactions from Backend API');
+                    } else {
+                        console.warn('⚠️ Backend API unavailable, falling back to Supabase');
+                        const txnRes = await supabase
+                            .from('transactions')
+                            .select('*, transaction_items(*)')
+                            .order('created_at', { ascending: false });
+                        if (txnRes.data) txnData = txnRes.data.map(mapTransaction);
+                    }
+                } catch (error) {
+                    console.error('Backend API error, falling back to Supabase:', error);
+                    const txnRes = await supabase
+                        .from('transactions')
+                        .select('*, transaction_items(*)')
+                        .order('created_at', { ascending: false });
+                    if (txnRes.data) txnData = txnRes.data.map(mapTransaction);
+                }
+            } else {
+                const txnRes = await supabase
                     .from('transactions')
                     .select('*, transaction_items(*)')
-                    .order('created_at', { ascending: false }),
+                    .order('created_at', { ascending: false });
+                if (txnRes.data) txnData = txnRes.data.map(mapTransaction);
+            }
+
+            // Load other data from Supabase (accounts, budgets, subscriptions, goals)
+            const [accRes, bgtRes, subRes, goalsRes] = await Promise.all([
                 supabase.from('accounts').select('*').order('created_at', { ascending: true }),
                 supabase.from('budgets').select('*').order('created_at', { ascending: true }),
                 supabase.from('subscriptions').select('*').order('created_at', { ascending: false }),
                 supabase.from('goals').select('*').order('created_at', { ascending: true })
             ]);
 
-            const possibleErrors = [txnRes.error, accRes.error, bgtRes.error, subRes.error, goalsRes.error].filter(Boolean);
+            const possibleErrors = [accRes.error, bgtRes.error, subRes.error, goalsRes.error].filter(Boolean);
             if (possibleErrors.length > 0) {
                 const errorMessage = possibleErrors.map(e => e?.message).join(" | ");
                 console.error("Database Error:", errorMessage);
@@ -168,67 +213,150 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            if (txnRes.data) setTransactions(txnRes.data.map(mapTransaction));
+            if (txnData) setTransactions(txnData);
             if (accRes.data) setAccounts(accRes.data.map(a => ({ ...a, balance: Number(a.balance), limit: a.limit ? Number(a.limit) : undefined })));
             if (bgtRes.data) setBudgets(bgtRes.data.map(b => ({ ...b, allocated: Number(b.allocated), spent: Number(b.spent) })));
             if (subRes.data) setSubscriptions(subRes.data.map(s => ({ ...s, amount: Number(s.amount) })));
             if (goalsRes.data) setGoals(goalsRes.data.map(g => ({ ...g, target_amount: Number(g.target_amount), current_amount: Number(g.current_amount) })));
 
             setIsLoaded(true);
+            
+            // Load insights if user is authenticated
+            if (user) {
+                loadInsightsData(user.id);
+            }
         };
         loadData();
-    }, [supabase]);
+    }, [supabase, useBackendAPI]);
+
+    // Function to load insights
+    const loadInsightsData = async (userId: string, days: number = 90, useAI: boolean = true) => {
+        setInsightsLoading(true);
+        try {
+            const insightsData = await InsightsAPI.getSmartInsights(userId, days, useAI);
+            setInsights(insightsData);
+        } catch (error) {
+            console.error('Error loading insights:', error);
+            // Don't set insights to null on error, keep previous data if available
+        } finally {
+            setInsightsLoading(false);
+        }
+    };
+
+    // Public function to refresh insights
+    const loadInsights = async (days: number = 90, useAI: boolean = true) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            await loadInsightsData(user.id, days, useAI);
+        }
+    };
 
     // Actions
     const addTransaction = async (txnData: Omit<Transaction, "id" | "status">) => {
-        const items = txnData.items ?? [];
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            console.error("User not authenticated");
+            return;
+        }
 
+        const items = txnData.items ?? [];
         let insertedTransactions: Transaction[] = [];
         let totalComputedAmount = 0;
         let primaryCategory = txnData.category;
 
-        if (items.length > 0) {
-            // Loop through each item and create an independent transaction for it
-            for (const item of items) {
-                const itemAmount = item.unit_price * item.quantity;
-                totalComputedAmount += itemAmount;
+        if (useBackendAPI) {
+            // Use Backend API for transactions
+            try {
+                if (items.length > 0) {
+                    // Create separate transactions for each item
+                    const transactionsToCreate = items.map(item => ({
+                        date: txnData.date,
+                        description: item.name,
+                        category: item.category || txnData.category,
+                        type: txnData.type,
+                        amount: item.unit_price * item.quantity,
+                        user_id: user.id,
+                        invoice_ref: txnData.invoice_ref ?? undefined,
+                        source: txnData.source ?? 'manual',
+                    }));
+
+                    const createdTxns = await TransactionAPI.bulkCreate(transactionsToCreate);
+                    insertedTransactions = createdTxns.map((txn: any) => ({
+                        ...txn,
+                        status: 'Completed' as const,
+                        source: (txn.source as TransactionSource) ?? 'manual',
+                        items: [],
+                    }));
+                    totalComputedAmount = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
+                    primaryCategory = items[0]?.category ?? txnData.category;
+                } else {
+                    // Single transaction
+                    totalComputedAmount = Math.abs(txnData.amount);
+                    const createdTxn = await TransactionAPI.create({
+                        date: txnData.date,
+                        description: txnData.description,
+                        category: txnData.category,
+                        type: txnData.type,
+                        amount: totalComputedAmount,
+                        user_id: user.id,
+                        invoice_ref: txnData.invoice_ref ?? undefined,
+                        source: txnData.source ?? 'manual',
+                    });
+                    insertedTransactions = [{
+                        ...createdTxn,
+                        status: 'Completed' as const,
+                        source: (createdTxn.source as TransactionSource) ?? 'manual',
+                        items: [],
+                    }];
+                }
+                console.log('✅ Created transaction via Backend API');
+            } catch (error) {
+                console.error('Backend API error during transaction creation:', error);
+                return;
+            }
+        } else {
+            // Use Supabase for transactions (original logic)
+            if (items.length > 0) {
+                for (const item of items) {
+                    const itemAmount = item.unit_price * item.quantity;
+                    totalComputedAmount += itemAmount;
+                    const { data, error } = await supabase.from('transactions').insert([{
+                        date: txnData.date,
+                        description: item.name,
+                        category: item.category || txnData.category,
+                        type: txnData.type,
+                        amount: itemAmount,
+                        status: 'Completed',
+                        invoice_ref: txnData.invoice_ref ?? null,
+                        source: txnData.source ?? 'manual',
+                    }]).select().single();
+
+                    if (error || !data) {
+                        console.error("Failed to insert item transaction:", error);
+                    } else {
+                        insertedTransactions.push(mapTransaction({ ...data, transaction_items: [] }));
+                    }
+                }
+                primaryCategory = items[0]?.category ?? txnData.category;
+            } else {
+                totalComputedAmount = Math.abs(txnData.amount);
                 const { data, error } = await supabase.from('transactions').insert([{
                     date: txnData.date,
-                    description: item.name,
-                    category: item.category || txnData.category,
+                    description: txnData.description,
+                    category: txnData.category,
                     type: txnData.type,
-                    amount: itemAmount,
+                    amount: totalComputedAmount,
                     status: 'Completed',
                     invoice_ref: txnData.invoice_ref ?? null,
                     source: txnData.source ?? 'manual',
                 }]).select().single();
 
                 if (error || !data) {
-                    console.error("Failed to insert item transaction:", error);
-                } else {
-                    insertedTransactions.push(mapTransaction({ ...data, transaction_items: [] }));
+                    console.error("Failed to insert transaction:", error);
+                    return;
                 }
+                insertedTransactions.push(mapTransaction({ ...data, transaction_items: [] }));
             }
-            primaryCategory = items[0]?.category ?? txnData.category;
-        } else {
-            // Standard single transaction insert without items
-            totalComputedAmount = Math.abs(txnData.amount);
-            const { data, error } = await supabase.from('transactions').insert([{
-                date: txnData.date,
-                description: txnData.description,
-                category: txnData.category,
-                type: txnData.type,
-                amount: totalComputedAmount,
-                status: 'Completed',
-                invoice_ref: txnData.invoice_ref ?? null,
-                source: txnData.source ?? 'manual',
-            }]).select().single();
-
-            if (error || !data) {
-                console.error("Failed to insert transaction:", error);
-                return; // halt if the single txn fails
-            }
-            insertedTransactions.push(mapTransaction({ ...data, transaction_items: [] }));
         }
 
         if (insertedTransactions.length > 0) {
@@ -361,9 +489,19 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     };
 
     const deleteTransaction = async (id: string) => {
-        // CASCADE on the DB will also delete transaction_items
-        await supabase.from('transactions').delete().eq('id', id);
-        setTransactions(prev => prev.filter(t => t.id !== id));
+        if (useBackendAPI) {
+            try {
+                await TransactionAPI.delete(id);
+                setTransactions(prev => prev.filter(t => t.id !== id));
+                console.log('✅ Deleted transaction via Backend API');
+            } catch (error) {
+                console.error('Backend API error during transaction deletion:', error);
+            }
+        } else {
+            // CASCADE on the DB will also delete transaction_items
+            await supabase.from('transactions').delete().eq('id', id);
+            setTransactions(prev => prev.filter(t => t.id !== id));
+        }
     };
 
     const deleteAccount = async (id: string) => {
@@ -409,10 +547,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
 
     return (
         <FinanceContext.Provider value={{
-            transactions, accounts, budgets, subscriptions, goals,
+            transactions, accounts, budgets, subscriptions, goals, insights, insightsLoading,
             addTransaction, syncExternalTransactions, addAccount, addBudget, addSubscription, addGoal,
             deleteTransaction, deleteAccount, deleteBudget, deleteSubscription, deleteGoal,
-            getIconComponent
+            loadInsights, getIconComponent
         }}>
             {children}
         </FinanceContext.Provider>

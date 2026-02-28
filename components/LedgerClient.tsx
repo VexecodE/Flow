@@ -33,6 +33,7 @@ import { useFinance, Transaction } from "@/context/FinanceContext";
 const COLORS = ['#DBDC5D', '#8BBFDA', '#A9B81B', '#703EFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'];
 
 export function LedgerClient() {
+<<<<<<< HEAD
     let { transactions, addTransaction, deleteTransaction } = useFinance();
     let isDemoMode = false;
     let mockCashFlowData: any[] = [];
@@ -65,6 +66,9 @@ export function LedgerClient() {
             });
         }
     }
+=======
+    const { transactions, addTransaction, deleteTransaction, insights, insightsLoading, loadInsights } = useFinance();
+>>>>>>> origin/main
     const containerRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<HTMLDivElement>(null);
 
@@ -687,19 +691,57 @@ export function LedgerClient() {
                                     <Sparkles className="w-6 h-6 text-primary" />
                                     <h3 className="font-bold text-xl text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Smart Insight</h3>
                                 </div>
-                                <p className="text-sm text-gray-700 font-semibold leading-relaxed mb-6">
-                                    {expenseBreakdownData.length > 0 ? (
-                                        <>
-                                            Your highest expense is currently in <strong>{expenseBreakdownData[0].name}</strong>, totaling <strong>₹{expenseBreakdownData[0].value.toLocaleString()}</strong>.
-                                            Total Income stands at ₹{totalIncome.toLocaleString()}, resulting in a net balance of <strong>₹{balance.toLocaleString()}</strong>.
-                                        </>
-                                    ) : (
-                                        "Start tracking your income and expenses to receive personalized, AI-driven insights on your spending habits."
-                                    )}
-                                </p>
-                                <button className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                                    View Detailed Forecast <ArrowRight className="w-4 h-4" />
-                                </button>
+                                {insightsLoading ? (
+                                    <div className="text-sm text-gray-600 font-semibold mb-6 flex items-center gap-2">
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Analyzing your transactions...
+                                    </div>
+                                ) : insights ? (
+                                    <>
+                                        <div className="space-y-3 mb-6">
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-gray-600 font-medium">Total Income</span>
+                                                <span className="font-bold text-green-600">₹{insights.total_income.toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-gray-600 font-medium">Total Expenses</span>
+                                                <span className="font-bold text-red-600">₹{insights.total_expenses.toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-sm pt-2 border-t border-gray-200">
+                                                <span className="text-gray-700 font-semibold">Savings Rate</span>
+                                                <span className={`font-bold ${insights.savings_rate > 20 ? 'text-green-600' : insights.savings_rate > 10 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                                    {insights.savings_rate.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {insights.recommendations && insights.recommendations.length > 0 && (
+                                            <div className="text-sm text-gray-700 font-semibold leading-relaxed mb-6 bg-white/50 rounded-2xl p-4 border border-primary/10">
+                                                <div className="flex items-start gap-2">
+                                                    <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                                    <p>{insights.recommendations[0]}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <button 
+                                            onClick={() => loadInsights(90, true)}
+                                            className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+                                        >
+                                            Refresh Insights <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-sm text-gray-700 font-semibold leading-relaxed mb-6">
+                                            Start tracking your income and expenses to receive personalized, AI-driven insights on your spending habits.
+                                        </p>
+                                        <button 
+                                            onClick={() => loadInsights(90, true)}
+                                            className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+                                        >
+                                            Generate Insights <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    </>
+                                )}
                             </div>
 
                             {/* CIBIL Growth Engine */}
