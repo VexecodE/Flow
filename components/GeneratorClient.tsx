@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode";
 import gsap from "gsap";
 import { Sidebar } from "./Sidebar";
+import { DashboardWaves } from "./DashboardWaves";
 import { Header } from "./Header";
 import { QrCode, Plus, Link as LinkIcon, Download } from "lucide-react";
 
@@ -64,10 +65,11 @@ export function GeneratorClient() {
     };
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
+        <div className="flex h-screen overflow-hidden bg-transparent relative">
+            <DashboardWaves />
             <Sidebar />
 
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
 

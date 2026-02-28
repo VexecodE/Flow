@@ -98,7 +98,7 @@ export function Header() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search for metrics or settings..."
+                        placeholder="Search"
                         className="w-full pl-11 pr-4 py-2.5 bg-white shadow-soft rounded-full text-sm text-black outline-none focus:ring-2 focus:ring-gray-100 transition-all placeholder:text-gray-400 font-medium"
                     />
                 </div>

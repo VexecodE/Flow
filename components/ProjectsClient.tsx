@@ -14,7 +14,8 @@ import {
     Github,
     Globe,
     Code2,
-    Terminal
+    Terminal,
+    UploadCloud
 } from "lucide-react";
 
 export function ProjectsClient() {
@@ -66,14 +67,20 @@ export function ProjectsClient() {
                     <div ref={viewRef} className="max-w-6xl mx-auto space-y-6">
 
                         {/* Page Title */}
-                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex items-center gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
-                            <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center shrink-0">
-                                <Briefcase className="w-6 h-6 text-gray-900" />
+                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex flex-col sm:flex-row items-center justify-between gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center shrink-0">
+                                    <Briefcase className="w-6 h-6 text-gray-900" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Project Portfolio</h1>
+                                    <p className="text-sm font-medium text-gray-500 mt-1">Manage and track your active developments and past works.</p>
+                                </div>
                             </div>
-                            <div>
-                                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Project Portfolio</h1>
-                                <p className="text-sm font-medium text-gray-500 mt-1">Manage and track your active developments and past works.</p>
-                            </div>
+                            <button className="whitespace-nowrap flex items-center gap-2 bg-primary text-white border border-primary px-6 py-3 rounded-xl text-sm font-bold shadow-soft hover:bg-primary/90 transition-all duration-300">
+                                <UploadCloud className="w-5 h-5" />
+                                Upload Recent Work
+                            </button>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

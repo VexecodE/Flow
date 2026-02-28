@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { Sidebar } from "../Sidebar";
+import { DashboardWaves } from "../DashboardWaves";
 import gsap from "gsap";
 import { Header } from "../Header";
 import {
@@ -71,9 +72,10 @@ export function AccountsClient() {
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50/30">
+            <DashboardWaves />
             <Sidebar />
 
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
                 {/* Background ambient accents */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
 
@@ -191,7 +193,7 @@ export function AccountsClient() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+                                className="absolute inset-0 bg-transparent relative/80 backdrop-blur-sm"
                                 onClick={() => setIsAddModalOpen(false)}
                             />
                             <motion.div

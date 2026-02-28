@@ -20,7 +20,7 @@ import {
     ChevronDown,
     Send
 } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, Legend, LabelList } from 'recharts';
 
 import { useFinance, Transaction } from "@/context/FinanceContext";
 
@@ -130,6 +130,8 @@ export function DashboardClient() {
                 date: dateStr,
                 income: curIncome + (Math.random() * 2000),
                 expenses: curExpense + ((Math.random() - 0.5) * 5000),
+                expenseLabel: (i % 6 === 0) ? (curExpense + ((Math.random() - 0.5) * 5000)) : null,
+                incomeLabel: (i % 5 === 0) ? (curIncome + (Math.random() * 2000)) : null
             });
         }
         cashFlowPerformance = mockPerformance;
@@ -148,6 +150,13 @@ export function DashboardClient() {
             { id: "mock-5", description: "Monthly AdSense Revenue", category: "Income", status: "Completed", amount: 28400, date: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' }
         ] as any[];
     }
+
+    const mockRevenueData = [
+        { name: "W1", Product: 4000, Agency: 2400 },
+        { name: "W2", Product: 4500, Agency: 1398 },
+        { name: "W3", Product: 2000, Agency: 9800 },
+        { name: "W4", Product: 6780, Agency: 8908 },
+    ];
 
     useEffect(() => {
         if (viewRef.current) {
@@ -263,8 +272,12 @@ export function DashboardClient() {
                                                 formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, undefined]}
                                                 cursor={{ stroke: '#6B7280', strokeWidth: 1, strokeDasharray: '4 4' }}
                                             />
-                                            <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#00E5FF" strokeWidth={2.5} dot={false} activeDot={{ r: 6, fill: '#00E5FF', strokeWidth: 0 }} />
-                                            <Line type="monotone" dataKey="income" name="Income" stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="4 4" dot={{ r: 6, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 8, fill: '#2563EB', strokeWidth: 0 }} />
+                                            <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#00E5FF" strokeWidth={2.5} dot={false} activeDot={{ r: 6, fill: '#00E5FF', strokeWidth: 0 }}>
+                                                <LabelList dataKey="expenseLabel" position="top" fill="#ffffff" fontSize={11} fontWeight="bold" formatter={(v: any) => v ? `₹${(v / 1000).toFixed(1)}k` : ''} offset={12} />
+                                            </Line>
+                                            <Line type="monotone" dataKey="income" name="Income" stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="4 4" dot={{ r: 6, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 8, fill: '#2563EB', strokeWidth: 0 }}>
+                                                <LabelList dataKey="incomeLabel" position="bottom" fill="#9CA3AF" fontSize={11} fontWeight="bold" formatter={(v: any) => v ? `₹${(v / 1000).toFixed(1)}k` : ''} offset={12} />
+                                            </Line>
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -366,6 +379,32 @@ export function DashboardClient() {
                                     <button className="mt-4 text-primary text-xs font-bold hover:underline" onClick={() => window.location.href = '/ledger'}>Add your first entry &rarr;</button>
                                 </div>
                             )}
+                        </div>
+
+                        {/* 6. Revenue Breakdown (Sample Graph) */}
+                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] mt-6 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-900 tracking-tight">Revenue Breakdown (Sample)</h3>
+                                    <p className="text-xs font-medium text-gray-500 mt-1">Product Sales vs Agency Services</p>
+                                </div>
+                            </div>
+                            <div className="h-[300px] w-full mt-4">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={mockRevenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barSize={32}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                        <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6B7280', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
+                                        <YAxis tick={{ fontSize: 10, fill: '#6B7280', fontWeight: 'bold' }} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
+                                        <RechartsTooltip
+                                            contentStyle={{ borderRadius: '12px', border: '1px solid #F3F4F6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', color: '#111827', fontWeight: 'bold', fontSize: '12px' }}
+                                            cursor={{ fill: '#F9FAFB' }}
+                                        />
+                                        <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', color: '#374151' }} />
+                                        <Bar dataKey="Product" stackId="a" fill="#000000" radius={[0, 0, 4, 4]} />
+                                        <Bar dataKey="Agency" stackId="a" fill="#2563EB" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
 
                     </div>

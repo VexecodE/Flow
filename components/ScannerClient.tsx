@@ -5,6 +5,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import QRCode from "qrcode";
 import gsap from "gsap";
 import { Sidebar } from "./Sidebar";
+import { DashboardWaves } from "./DashboardWaves";
 import { Header } from "./Header";
 import { ScanFace, Receipt, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
 import { processMockScan, ScannedReceipt } from "@/app/warranty/actions";
@@ -193,10 +194,11 @@ export function ScannerClient() {
 
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
+        <div className="flex h-screen overflow-hidden bg-transparent relative">
+            <DashboardWaves />
             <Sidebar />
 
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
 

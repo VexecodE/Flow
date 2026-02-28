@@ -74,7 +74,7 @@ export function CreditClient() {
                                     <Shield className="w-6 h-6 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Trust & Credit Score</h1>
+                                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Trust & Credibility Score</h1>
                                     <p className="text-sm font-medium text-gray-500 mt-1">Your reliability score based on completed projects, transactions, and peer feedback.</p>
                                 </div>
                             </div>

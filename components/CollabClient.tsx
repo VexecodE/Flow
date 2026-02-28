@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import gsap from "gsap";
 import { Header } from "./Header";
@@ -36,6 +36,7 @@ export function CollabClient() {
             skills: ["React", "Node.js", "GraphQL"],
             availability: "Available Next Week",
             rating: 4.9,
+            credibilityScore: 785,
             split: "50/50 Revenue Split",
             avatar: "AR"
         },
@@ -45,6 +46,7 @@ export function CollabClient() {
             skills: ["Figma", "TailwindCSS", "Next.js"],
             availability: "Accepting Offers",
             rating: 5.0,
+            credibilityScore: 812,
             split: "Hourly or Equity",
             avatar: "SC"
         },
@@ -54,10 +56,39 @@ export function CollabClient() {
             skills: ["Solidity", "Hardhat", "Rust"],
             availability: "Busy until May",
             rating: 4.7,
+            credibilityScore: 745,
             split: "Milestone Based",
             avatar: "JS"
+        },
+        {
+            name: "Emily Wang",
+            role: "CAD Designer",
+            skills: ["AutoCAD", "SolidWorks", "Fusion 360", "3D Modeling"],
+            availability: "Available Now",
+            rating: 4.9,
+            credibilityScore: 795,
+            split: "Hourly",
+            avatar: "EW"
+        },
+        {
+            name: "Marcus Johnson",
+            role: "Senior CAD Designer",
+            skills: ["Revit", "Rhino", "SketchUp"],
+            availability: "Part-time only",
+            rating: 4.8,
+            credibilityScore: 760,
+            split: "Project Based",
+            avatar: "MJ"
         }
     ];
+
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredDevelopers = developers.filter(dev =>
+        dev.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dev.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        dev.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="flex bg-transparent h-screen overflow-hidden relative">
@@ -81,9 +112,16 @@ export function CollabClient() {
                                     <p className="text-sm font-medium text-gray-500 mt-1">Find partners to build, share revenue, and innovate together.</p>
                                 </div>
                             </div>
-                            <button className="hidden sm:flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">
-                                <Search className="w-4 h-4" /> Find Developers
-                            </button>
+                            <div className="hidden sm:flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-soft transition-colors focus-within:ring-2 focus-within:ring-white/20">
+                                <Search className="w-4 h-4 shrink-0" />
+                                <input
+                                    type="text"
+                                    placeholder="Find Clients"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="bg-transparent border-none outline-none text-white placeholder:text-gray-400 w-48 font-semibold"
+                                />
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -134,14 +172,19 @@ export function CollabClient() {
                                             View Map <ArrowRight className="w-3 h-3" />
                                         </button>
                                     </h3>
-                                    {developers.map((dev, i) => (
+                                    {filteredDevelopers.map((dev, i) => (
                                         <div key={i} className="bg-white border border-gray-100 shadow-soft p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-soft-md transition-shadow cursor-pointer group">
                                             <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-50 to-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-lg font-black text-indigo-700 shrink-0 group-hover:scale-105 transition-transform">
                                                 {dev.avatar}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
-                                                    <h4 className="text-base font-bold text-gray-900 truncate">{dev.name}</h4>
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                        <h4 className="text-base font-bold text-gray-900 truncate">{dev.name}</h4>
+                                                        <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 flex items-center gap-1 shrink-0">
+                                                            Score: {dev.credibilityScore}
+                                                        </span>
+                                                    </div>
                                                     <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100 w-max shrink-0">
                                                         {dev.availability}
                                                     </span>

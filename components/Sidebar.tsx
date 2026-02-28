@@ -33,13 +33,11 @@ export function Sidebar() {
   const navItems = [
     { icon: Home, label: "Dashboard", href: "/", badge: undefined },
     { icon: ReceiptText, label: "Transactions", href: "/ledger", badge: "2 New" },
-    { icon: Upload, label: "Resume Upload", href: "/resume" },
     { icon: Briefcase, label: "Projects", href: "/projects" },
-    { icon: TrendingUp, label: "Investments", href: "/investments" },
-    { icon: CalendarDays, label: "Calendar", href: "/calendar" },
     { icon: Users, label: "Collab", href: "/collab" },
+    { icon: Target, label: "Credibility Score", href: "/credit" },
     { icon: ShoppingBag, label: "Marketplace", href: "/marketplace" },
-    { icon: Target, label: "Credit Score", href: "/credit" },
+    { icon: CalendarDays, label: "Calendar", href: "/calendar" },
     { icon: Settings, label: "Settings", href: "#" },
     { icon: User, label: "Profile", href: "#" },
   ];

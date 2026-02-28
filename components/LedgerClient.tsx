@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Sidebar } from "./Sidebar";
+import { DashboardWaves } from "./DashboardWaves";
 import { Header } from "./Header";
 import {
     Plus,
@@ -20,7 +21,9 @@ import {
     ArrowRightLeft,
     Mic,
     MicOff,
-    Loader2
+    Loader2,
+    Bell,
+    Building2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -30,12 +33,44 @@ import { useFinance, Transaction } from "@/context/FinanceContext";
 const COLORS = ['#DBDC5D', '#8BBFDA', '#A9B81B', '#703EFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'];
 
 export function LedgerClient() {
-    const { transactions, addTransaction, deleteTransaction } = useFinance();
+    let { transactions, addTransaction, deleteTransaction } = useFinance();
+    let isDemoMode = false;
+    let mockCashFlowData: any[] = [];
+
+    if (transactions.length === 0) {
+        isDemoMode = true;
+        const now = new Date();
+        transactions = [
+            { id: "mock-1", description: "AWS Cloud Hosting", category: "Infrastructure", status: "Completed", amount: -4500, date: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-2", description: "Client Retainer - Q3", category: "Sales", status: "Completed", amount: 125000, date: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' },
+            { id: "mock-3", description: "Figma Teams Subscription", category: "Software", status: "Completed", amount: -1200, date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-4", description: "Upwork Escrow Funding", category: "Services", status: "Pending", amount: -15000, date: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-5", description: "Monthly AdSense Revenue", category: "Sales", status: "Completed", amount: 28400, date: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' }
+        ] as any[];
+
+        let curExpense = 80000;
+        let curIncome = 10000;
+        for (let i = 30; i >= 0; i--) {
+            const dateStr = new Date(now.getTime() - i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+            if (i < 5) curExpense *= 0.6;
+            else if (i < 15) curExpense *= 0.9;
+            else if (i < 25) curExpense *= 0.98;
+            if (i < 10) curIncome *= 1.25;
+            else if (i < 20) curIncome *= 1.1;
+            else curIncome *= 1.05;
+            mockCashFlowData.push({
+                date: dateStr,
+                income: curIncome + (Math.random() * 2000),
+                expense: curExpense + ((Math.random() - 0.5) * 5000),
+            });
+        }
+    }
     const containerRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<HTMLDivElement>(null);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
+    const [isEmiReminderActive, setIsEmiReminderActive] = useState(true);
 
     // Custom categories state
     const [customCategories, setCustomCategories] = useState<string[]>([
@@ -231,9 +266,11 @@ export function LedgerClient() {
         }
     }, []);
 
-    const totalIncome = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-    const totalExpense = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-    const balance = transactions.reduce((sum, t) => sum + t.amount, 0);
+    const totalIncome = isDemoMode ? 245000 : transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+    const totalExpense = isDemoMode ? 42100 : transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    const balance = isDemoMode ? 84112 : transactions.reduce((sum, t) => sum + t.amount, 0);
+    const incomeTrend = isDemoMode ? "+18.2%" : "+14%";
+    const expenseTrend = isDemoMode ? "-42.5%" : "-2%";
 
     const handleAddCategory = () => {
         if (!newCategory.trim() || customCategories.includes(newCategory.trim())) return;
@@ -390,14 +427,18 @@ export function LedgerClient() {
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     };
 
-    const cashFlowData = getFilteredCashFlowData();
+    const cashFlowData = isDemoMode ? mockCashFlowData : getFilteredCashFlowData();
 
     // Reset pagination to 1 when search or filter changes
     useEffect(() => {
         setCurrentPage(1);
     }, [searchQuery, filterType]);
 
-    const expenseBreakdownData = transactions
+    const expenseBreakdownData = isDemoMode ? [
+        { name: "Server Infrastructure", value: 15400 },
+        { name: "Software Subscriptions", value: 12500 },
+        { name: "Office Assets", value: 8200 }
+    ] : transactions
         .filter(t => t.amount < 0 && t.category_prices)
         .reduce((acc, txn) => {
             if (!txn.category_prices) return acc;
@@ -493,9 +534,10 @@ export function LedgerClient() {
     };
 
     return (
-        <div ref={viewRef} className="flex h-screen overflow-hidden bg-background">
+        <div ref={viewRef} className="flex h-screen overflow-hidden bg-transparent relative">
+            <DashboardWaves />
             <Sidebar />
-            <div className="flex-1 flex flex-col h-full overflow-y-auto relative">
+            <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-10">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
                 <Header />
@@ -540,8 +582,8 @@ export function LedgerClient() {
                                 <Wallet className="w-20 h-20 sm:w-24 sm:h-24" />
                             </div>
                             <div className="flex justify-between items-start mb-6 relative z-10">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <Wallet className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-black/80 to-white/20 text-white flex items-center justify-center transition-all duration-300 group-hover:invert">
+                                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </div>
                             </div>
                             <div className="relative z-10">
@@ -555,11 +597,11 @@ export function LedgerClient() {
                                 <TrendingUp className="w-20 h-20 sm:w-24 sm:h-24" />
                             </div>
                             <div className="flex justify-between items-start mb-6 relative z-10">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-black/80 to-white/20 text-white flex items-center justify-center transition-all duration-300 group-hover:invert">
+                                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </div>
                                 <span className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full">
-                                    <ArrowUpRight className="w-3 h-3" /> +14%
+                                    <ArrowUpRight className="w-3 h-3" /> {incomeTrend}
                                 </span>
                             </div>
                             <div className="relative z-10">
@@ -573,9 +615,12 @@ export function LedgerClient() {
                                 <TrendingDown className="w-20 h-20 sm:w-24 sm:h-24" />
                             </div>
                             <div className="flex justify-between items-start mb-6 relative z-10">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-50 flex items-center justify-center text-red-600">
-                                    <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-black/80 to-white/20 text-white flex items-center justify-center transition-all duration-300 group-hover:invert">
+                                    <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </div>
+                                <span className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-red-700 bg-red-100 px-3 py-1.5 rounded-full">
+                                    <TrendingDown className="w-3 h-3" /> {expenseTrend}
+                                </span>
                             </div>
                             <div className="relative z-10">
                                 <p className="text-gray-500 text-xs sm:text-sm font-semibold mb-2">Total Expenses (Monthly)</p>
@@ -657,9 +702,67 @@ export function LedgerClient() {
                                 </button>
                             </div>
 
-                            {/* Expense Breakdown */}
+                            {/* CIBIL Growth Engine */}
                             <div className="bg-white rounded-[32px] border border-gray-100 shadow-soft p-6 sm:p-8 flex-1 flex flex-col">
-                                <h3 className="text-lg font-bold text-foreground mb-6">Expense Breakdown</h3>
+                                <h3 className="text-lg font-bold text-foreground mb-4">CIBIL Growth Engine</h3>
+
+                                <div className="flex items-center justify-between bg-primary/5 p-4 rounded-2xl mb-6 border border-primary/10">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                                            <Bell className="w-4 h-4 text-primary" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900 leading-tight">EMI Reminders</p>
+                                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 mt-0.5">Send a notification 5 days before the EMI date</p>
+                                        </div>
+                                    </div>
+                                    {/* Mock Toggle Switch */}
+                                    <div
+                                        onClick={() => setIsEmiReminderActive(!isEmiReminderActive)}
+                                        className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
+                                    >
+                                        <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${isEmiReminderActive ? 'left-[22px]' : 'left-0.5'}`}></div>
+                                    </div>
+                                </div>
+
+                                <AnimatePresence>
+                                    {isEmiReminderActive && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
+                                            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="bg-red-50/50 border border-red-100 rounded-2xl p-4 flex flex-col gap-3">
+                                                <div className="flex justify-between items-start">
+                                                    <div className="flex gap-3 items-center">
+                                                        <div className="w-10 h-10 rounded-xl bg-white shadow-soft flex items-center justify-center shrink-0 border border-gray-50">
+                                                            <Building2 className="w-5 h-5 text-gray-700" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-bold text-gray-900">Home Loan EMI</p>
+                                                            <p className="text-xs font-semibold text-gray-500">HDFC Bank</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-sm font-bold text-gray-900">₹45,200</p>
+                                                        <p className="text-[10px] sm:text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full inline-block mt-1">Due in 5 days</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 mt-1">
+                                                    <button className="flex-1 bg-primary text-white text-xs font-bold py-2 rounded-xl hover:bg-primary/90 transition-colors shadow-soft">
+                                                        Pay Now
+                                                    </button>
+                                                    <button className="flex-1 bg-white text-gray-700 border border-gray-200 text-xs font-bold py-2 rounded-xl hover:bg-gray-50 transition-colors shadow-soft">
+                                                        Remind Later
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
                                 {expenseBreakdownData.length > 0 ? (
                                     <div className="flex-1 flex flex-col justify-center relative">
                                         <div className="h-[140px] w-full">
