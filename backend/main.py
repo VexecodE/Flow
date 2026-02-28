@@ -4,6 +4,7 @@ from transactions import transaction_router
 from insights import insights_router
 from reminders import reminder_router
 from chatbot import router as chatbot_router
+from ml import router as ml_router
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -35,6 +36,7 @@ app.include_router(transaction_router, prefix="/api")
 app.include_router(insights_router, prefix="/api")
 app.include_router(reminder_router, prefix="/api")
 app.include_router(chatbot_router, prefix="/api")
+app.include_router(ml_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")
@@ -57,6 +59,8 @@ def read_root():
             "chatbot": "/api/chat/message",
             "chatbot_status": "/api/chat/status",
             "reminders": "/api/reminders/emi",
+            "trust_predict": "/api/trust/predict",
+            "trust_health": "/api/trust/health",
             "docs": "/docs",
             "redoc": "/redoc"
         }

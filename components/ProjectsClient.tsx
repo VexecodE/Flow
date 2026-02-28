@@ -7,6 +7,7 @@ import { Header } from "./Header";
 import { DashboardWaves } from "./DashboardWaves";
 import { GitHubUploadModal } from "./GitHubUploadModal";
 import { GitHubProjectCard } from "./GitHubProjectCard";
+import { TrustPredictionInline } from "./TrustPredictionInline";
 import {
     Briefcase,
     Zap,
@@ -188,6 +189,9 @@ export function ProjectsClient() {
                             </div>
 
                         </div>
+
+                        {/* Trust Prediction Section */}
+                        <TrustPredictionInline />
 
                         {/* GitHub Projects Section */}
                         {githubProjects.length > 0 && (
