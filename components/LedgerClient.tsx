@@ -843,7 +843,7 @@ export function LedgerClient() {
                                     </div>
                                     {/* Toggle Switch with Email Integration */}
                                     <div
-                                        onClick={() => setIsEmiReminderActive(!isEmiReminderActive)}
+                                        onClick={handleEmiToggle}
                                         className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
                                     >
                                         <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${isEmiReminderActive ? 'left-[22px]' : 'left-0.5'} flex items-center justify-center`}>
