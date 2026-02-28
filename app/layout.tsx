@@ -42,7 +42,7 @@ const pixel = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Kolpay Ledger",
+  title: "Flo",
   description: "Next Generation Financial Management",
 };
 

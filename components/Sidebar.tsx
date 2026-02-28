@@ -19,7 +19,10 @@ import {
   Upload,
   Briefcase,
   TrendingUp,
-  CalendarDays
+  CalendarDays,
+  Users,
+  ShoppingBag,
+  Target
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -34,6 +37,9 @@ export function Sidebar() {
     { icon: Briefcase, label: "Projects", href: "/projects" },
     { icon: TrendingUp, label: "Investments", href: "/investments" },
     { icon: CalendarDays, label: "Calendar", href: "/calendar" },
+    { icon: Users, label: "Collab", href: "/collab" },
+    { icon: ShoppingBag, label: "Marketplace", href: "/marketplace" },
+    { icon: Target, label: "Credit Score", href: "/credit" },
     { icon: Settings, label: "Settings", href: "#" },
     { icon: User, label: "Profile", href: "#" },
   ];

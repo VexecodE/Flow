@@ -108,6 +108,12 @@ export function DashboardClient() {
                 { y: 20, opacity: 0 },
                 { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }
             );
+
+            // Animate progress bar
+            gsap.fromTo("#progress",
+                { width: "0%" },
+                { width: "38%", duration: 1.5, ease: "power2.out", delay: 0.3 }
+            );
         }
     }, []);
 

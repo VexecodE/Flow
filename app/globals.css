@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F4F5F7;
-  /* Soft off-white for contrast against white cards */
+  --background: #f0ebf5;
+  /* Soft light purple for contrast against white cards */
   --foreground: #111827;
   /* Soft black for text */
 
@@ -57,7 +57,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #F4F5F7;
+    --background: #f0ebf5;
     --foreground: #111827;
     --primary: #B026FF;
     --secondary: #00E5FF;
