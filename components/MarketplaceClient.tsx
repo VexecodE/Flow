@@ -13,7 +13,7 @@ import {
     Crown,
     CreditCard,
     ArrowRight,
-    Terminal,
+    PenTool,
     LayoutTemplate
 } from "lucide-react";
 
@@ -39,17 +39,17 @@ export function MarketplaceClient() {
             price: "$49",
             rating: 4.9,
             sales: 1240,
-            imageBg: "bg-blue-100"
+            imageBg: "bg-gray-100"
         },
         {
-            title: "Rust Payment Microservice",
-            creator: "Alex Rivera",
-            type: "Backend Boilerplate",
-            icon: Terminal,
-            price: "$199",
-            rating: 5.0,
-            sales: 342,
-            imageBg: "bg-orange-100"
+            title: "3D CAD Design Model Pack",
+            creator: "Emily Wang",
+            type: "CAD Assets",
+            icon: PenTool,
+            price: "$129",
+            rating: 4.9,
+            sales: 870,
+            imageBg: "bg-gray-100"
         },
         {
             title: "Patreon-style Subscription SDK",
@@ -59,7 +59,7 @@ export function MarketplaceClient() {
             price: "$89",
             rating: 4.8,
             sales: 2101,
-            imageBg: "bg-purple-100"
+            imageBg: "bg-gray-100"
         }
     ];
 
@@ -77,15 +77,15 @@ export function MarketplaceClient() {
                         {/* Page Title */}
                         <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex items-center justify-between gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center shrink-0">
-                                    <ShoppingBag className="w-6 h-6 text-pink-600" />
+                                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center shrink-0">
+                                    <ShoppingBag className="w-6 h-6 text-gray-900" />
                                 </div>
                                 <div>
                                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Marketplace & Creator Hub</h1>
                                     <p className="text-sm font-medium text-gray-500 mt-1">Buy and sell UI components, templates, and backend functions.</p>
                                 </div>
                             </div>
-                            <button className="hidden sm:flex items-center gap-2 bg-pink-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-soft hover:bg-pink-700 transition-colors">
+                            <button className="hidden sm:flex items-center gap-2 bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-soft hover:bg-black transition-colors">
                                 <Crown className="w-4 h-4" /> Become a Creator
                             </button>
                         </div>
@@ -100,11 +100,11 @@ export function MarketplaceClient() {
                                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 pointer-events-none">
                                         <Crown className="w-48 h-48 text-black" />
                                     </div>
-                                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-pink-500 to-rose-500 shadow-lg flex items-center justify-center shrink-0 border-4 border-white z-10">
+                                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-gray-800 to-gray-900 shadow-lg flex items-center justify-center shrink-0 border-4 border-white z-10">
                                         <span className="text-3xl sm:text-4xl font-black text-white">SUI</span>
                                     </div>
                                     <div className="flex-1 text-center sm:text-left z-10">
-                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-pink-50 text-pink-700 mb-3 border border-pink-100">
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gray-100 text-gray-900 mb-3 border border-gray-200">
                                             Top Rated Creator
                                         </div>
                                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2">Studio UI PRO</h2>
@@ -126,7 +126,7 @@ export function MarketplaceClient() {
                                 <div>
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-xl font-bold text-gray-900 tracking-tight">Trending Items</h3>
-                                        <div className="text-sm font-bold text-pink-600 hover:text-pink-800 transition-colors cursor-pointer uppercase tracking-tight flex items-center gap-1">
+                                        <div className="text-sm font-bold text-gray-900 hover:text-black transition-colors cursor-pointer uppercase tracking-tight flex items-center gap-1">
                                             View all <ArrowRight className="w-4 h-4" />
                                         </div>
                                     </div>
@@ -146,7 +146,7 @@ export function MarketplaceClient() {
                                                         <span className="text-lg font-black text-gray-900 tracking-tight">{item.price}</span>
                                                         <div className="flex items-center gap-3">
                                                             <div className="flex items-center gap-1 text-xs font-bold text-gray-700">
-                                                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                                                <Star className="w-3 h-3 fill-gray-900 text-gray-900" />
                                                                 {item.rating}
                                                             </div>
                                                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{item.sales} sold</span>

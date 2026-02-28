@@ -30,7 +30,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsToolti
 
 import { useFinance, Transaction } from "@/context/FinanceContext";
 
-const COLORS = ['#DBDC5D', '#8BBFDA', '#A9B81B', '#703EFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'];
+const COLORS = ['#111827', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB', '#1F2937', '#4B5563', '#E5E7EB', '#F3F4F6'];
 
 export function LedgerClient() {
     let { transactions, addTransaction, deleteTransaction, insights, insightsLoading, loadInsights } = useFinance();
@@ -538,8 +538,8 @@ export function LedgerClient() {
             <DashboardWaves />
             <Sidebar />
             <div className="flex-1 flex flex-col h-full overflow-y-auto relative z-10">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gray-900/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gray-400/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
                 <Header />
 
                 <main
@@ -549,7 +549,7 @@ export function LedgerClient() {
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4">
                         <div>
-                            <p className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider mb-2">Financials</p>
+                            <p className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wider mb-2">Financials</p>
                             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-tight">
                                 Ledger & Bookkeeping
                             </h1>
@@ -568,7 +568,7 @@ export function LedgerClient() {
                                 onClick={() => setIsAddModalOpen(true)}
                                 whileHover={{ y: -2 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="w-full sm:w-auto bg-primary text-white font-bold px-6 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-soft hover:shadow-soft-lg text-sm"
+                                className="w-full sm:w-auto bg-gray-900 text-white font-bold px-6 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-black transition-all shadow-soft hover:shadow-soft-lg text-sm"
                             >
                                 <Plus className="w-4 h-4" /> Add Entry
                             </motion.button>
@@ -641,7 +641,7 @@ export function LedgerClient() {
                                 <select
                                     value={dateFilter}
                                     onChange={(e) => setDateFilter(e.target.value as any)}
-                                    className="bg-gray-50 border-none rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer w-full sm:w-auto"
+                                    className="bg-gray-50 border-none rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold outline-none focus:ring-2 focus:ring-gray-900/50 cursor-pointer w-full sm:w-auto"
                                 >
                                     <option value="All">All Time</option>
                                     <option value="Last 30 Days">Last 30 Days</option>
@@ -679,13 +679,13 @@ export function LedgerClient() {
                         {/* AI Insights & Expense Breakdown */}
                         <div className="flex flex-col gap-6">
                             {/* AI Insight Card */}
-                            <div className="bg-linear-to-br from-primary/10 to-secondary/10 rounded-[32px] border border-primary/20 shadow-soft p-8 relative overflow-hidden group">
+                            <div className="bg-linear-to-br from-gray-900/10 to-gray-400/10 rounded-[32px] border border-gray-900/20 shadow-soft p-8 relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-4 opacity-10">
-                                    <Sparkles className="w-16 h-16 text-primary" />
+                                    <Sparkles className="w-16 h-16 text-gray-900" />
                                 </div>
                                 <div className="flex items-center gap-2 mb-4">
-                                    <Sparkles className="w-6 h-6 text-primary" />
-                                    <h3 className="font-bold text-xl text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Smart Insight</h3>
+                                    <Sparkles className="w-6 h-6 text-gray-900" />
+                                    <h3 className="font-bold text-xl text-gray-900">Smart Insight</h3>
                                 </div>
                                 {insightsLoading ? (
                                     <div className="text-sm text-gray-600 font-semibold mb-6 flex items-center gap-2">
@@ -711,16 +711,16 @@ export function LedgerClient() {
                                             </div>
                                         </div>
                                         {insights.recommendations && insights.recommendations.length > 0 && (
-                                            <div className="text-sm text-gray-700 font-semibold leading-relaxed mb-6 bg-white/50 rounded-2xl p-4 border border-primary/10">
+                                            <div className="text-sm text-gray-700 font-semibold leading-relaxed mb-6 bg-white/50 rounded-2xl p-4 border border-gray-200">
                                                 <div className="flex items-start gap-2">
-                                                    <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                                    <Sparkles className="w-4 h-4 text-gray-900 mt-0.5 flex-shrink-0" />
                                                     <p>{insights.recommendations[0]}</p>
                                                 </div>
                                             </div>
                                         )}
                                         <button
                                             onClick={() => loadInsights(90, true)}
-                                            className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+                                            className="text-sm font-bold text-gray-900 flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
                                         >
                                             Refresh Insights <ArrowRight className="w-4 h-4" />
                                         </button>
@@ -732,7 +732,7 @@ export function LedgerClient() {
                                         </p>
                                         <button
                                             onClick={() => loadInsights(90, true)}
-                                            className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+                                            className="text-sm font-bold text-gray-900 flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
                                         >
                                             Generate Insights <ArrowRight className="w-4 h-4" />
                                         </button>
@@ -744,10 +744,10 @@ export function LedgerClient() {
                             <div className="bg-white rounded-[32px] border border-gray-100 shadow-soft p-6 sm:p-8 flex-1 flex flex-col">
                                 <h3 className="text-lg font-bold text-foreground mb-4">CIBIL Growth Engine</h3>
 
-                                <div className="flex items-center justify-between bg-primary/5 p-4 rounded-2xl mb-6 border border-primary/10">
+                                <div className="flex items-center justify-between bg-gray-50 p-4 rounded-2xl mb-6 border border-gray-200">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
-                                            <Bell className="w-4 h-4 text-primary" />
+                                            <Bell className="w-4 h-4 text-gray-900" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-gray-900 leading-tight">EMI Reminders</p>
@@ -757,7 +757,7 @@ export function LedgerClient() {
                                     {/* Mock Toggle Switch */}
                                     <div
                                         onClick={() => setIsEmiReminderActive(!isEmiReminderActive)}
-                                        className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
+                                        className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-gray-900' : 'bg-gray-300'}`}
                                     >
                                         <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${isEmiReminderActive ? 'left-[22px]' : 'left-0.5'}`}></div>
                                     </div>
@@ -789,7 +789,7 @@ export function LedgerClient() {
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2 mt-1">
-                                                    <button className="flex-1 bg-primary text-white text-xs font-bold py-2 rounded-xl hover:bg-primary/90 transition-colors shadow-soft">
+                                                    <button className="flex-1 bg-gray-900 text-white text-xs font-bold py-2 rounded-xl hover:bg-black transition-colors shadow-soft">
                                                         Pay Now
                                                     </button>
                                                     <button className="flex-1 bg-white text-gray-700 border border-gray-200 text-xs font-bold py-2 rounded-xl hover:bg-gray-50 transition-colors shadow-soft">
@@ -871,7 +871,7 @@ export function LedgerClient() {
                     <div className="bg-white rounded-[32px] border border-gray-100 shadow-soft flex flex-col overflow-hidden mt-8">
                         <div className="p-6 sm:p-8 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                             <h2 className="text-xl font-bold text-foreground flex items-center gap-3">
-                                <Receipt className="w-6 h-6 text-primary" /> Transactions
+                                <Receipt className="w-6 h-6 text-gray-900" /> Transactions
                             </h2>
                             <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
                                 <div className="relative w-full sm:w-72">
@@ -881,10 +881,10 @@ export function LedgerClient() {
                                         placeholder="Search ledger..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="py-3 pl-11 pr-5 text-sm font-semibold bg-gray-50 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all w-full"
+                                        className="py-3 pl-11 pr-5 text-sm font-semibold bg-gray-50 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900/50 transition-all w-full"
                                     />
                                 </div>
-                                <div className="relative flex items-center bg-gray-50 rounded-full px-5 py-3 text-sm font-semibold focus-within:ring-2 focus-within:ring-primary/50 cursor-pointer transition-all w-full sm:w-auto">
+                                <div className="relative flex items-center bg-gray-50 rounded-full px-5 py-3 text-sm font-semibold focus-within:ring-2 focus-within:ring-gray-900/50 cursor-pointer transition-all w-full sm:w-auto">
                                     <Filter className="w-5 h-5 text-gray-400 mr-2 pointer-events-none" />
                                     <select
                                         className="bg-transparent outline-none cursor-pointer text-foreground appearance-none pr-4 w-full sm:w-auto"
@@ -907,7 +907,7 @@ export function LedgerClient() {
                                 <thead>
                                     <tr className="bg-gray-50/50 text-[10px] sm:text-xs uppercase tracking-wider text-gray-400 font-bold border-b border-gray-50">
                                         <th className="px-6 py-4">Transaction ID</th>
-                                        <th className="px-6 py-4 cursor-pointer hover:text-primary select-none" onClick={() => handleSort("date")}>
+                                        <th className="px-6 py-4 cursor-pointer hover:text-gray-900 select-none" onClick={() => handleSort("date")}>
                                             <div className="flex items-center gap-1">
                                                 Date {sortField === "date" && (sortDirection === "asc" ? "↑" : "↓")}
                                             </div>
@@ -915,7 +915,7 @@ export function LedgerClient() {
                                         <th className="px-6 py-4">Description</th>
                                         <th className="px-6 py-4">Category</th>
                                         <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4 text-right cursor-pointer hover:text-primary select-none" onClick={() => handleSort("amount")}>
+                                        <th className="px-6 py-4 text-right cursor-pointer hover:text-gray-900 select-none" onClick={() => handleSort("amount")}>
                                             <div className="flex items-center justify-end gap-1">
                                                 Amount {sortField === "amount" && (sortDirection === "asc" ? "↑" : "↓")}
                                             </div>
@@ -1017,7 +1017,7 @@ export function LedgerClient() {
                             >
                                 <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-900">
                                             <Plus className="w-5 h-5" />
                                         </div>
                                         <div>
@@ -1035,7 +1035,7 @@ export function LedgerClient() {
                                                 ? 'bg-red-50 text-red-600 border border-red-200 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
                                                 : isProcessingVoice
                                                     ? 'bg-gray-100 text-gray-500 border border-gray-200 cursor-not-allowed'
-                                                    : 'bg-primary/10 text-primary hover:bg-primary/20 hover:scale-105'
+                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200 hover:scale-105'
                                                 }`}
                                         >
                                             {isRecording && (
@@ -1062,7 +1062,7 @@ export function LedgerClient() {
 
                                     {/* Mock Receipt Dropzone */}
                                     <div
-                                        className={`mb-6 p-6 border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${isDragging ? 'border-primary bg-primary/5' : (receiptScanned ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300')}`}
+                                        className={`mb-6 p-6 border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${isDragging ? 'border-gray-900 bg-gray-50' : (receiptScanned ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300')}`}
                                         onDragOver={handleDragOver}
                                         onDragLeave={handleDragLeave}
                                         onDrop={handleDrop}
@@ -1075,8 +1075,8 @@ export function LedgerClient() {
                                         }} />
                                         {isScanningReceipt ? (
                                             <div className="flex flex-col items-center gap-2 py-4">
-                                                <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
-                                                <p className="text-xs font-bold text-primary">Extracting text via AI OCR...</p>
+                                                <div className="w-8 h-8 rounded-full border-2 border-gray-900 border-t-transparent animate-spin"></div>
+                                                <p className="text-xs font-bold text-gray-900">Extracting text via AI OCR...</p>
                                             </div>
                                         ) : receiptScanned ? (
                                             <div className="flex flex-col items-center gap-1.5 py-4">
@@ -1088,7 +1088,7 @@ export function LedgerClient() {
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center gap-2 py-4">
-                                                <Receipt className={`w-8 h-8 ${isDragging ? 'text-primary' : 'text-gray-400'} transition-colors`} />
+                                                <Receipt className={`w-8 h-8 ${isDragging ? 'text-gray-900' : 'text-gray-400'} transition-colors`} />
                                                 <div>
                                                     <p className="text-sm font-bold text-gray-700">Quick Scan Receipt</p>
                                                     <p className="text-xs font-medium text-gray-500 mt-1">Drag & drop or click to upload</p>
@@ -1122,7 +1122,7 @@ export function LedgerClient() {
                                                 value={amt}
                                                 onChange={(e) => setAmt(e.target.value)}
                                                 placeholder="0.00"
-                                                className="w-full text-lg font-bold p-3 px-5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all shadow-soft-inner"
+                                                className="w-full text-lg font-bold p-3 px-5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900/40 focus:border-gray-900 transition-all shadow-soft-inner"
                                                 autoFocus
                                                 required
                                             />
@@ -1143,14 +1143,14 @@ export function LedgerClient() {
                                                     value={desc}
                                                     onChange={(e) => setDesc(e.target.value)}
                                                     placeholder="e.g. Server costs, Product Sale"
-                                                    className="w-full text-sm font-semibold p-3 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all shadow-soft-inner"
+                                                    className="w-full text-sm font-semibold p-3 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900/40 focus:border-gray-900 transition-all shadow-soft-inner"
                                                     required
                                                 />
                                                 {recognitionRef.current && (
                                                     <button
                                                         type="button"
                                                         onClick={toggleListening}
-                                                        className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-500' : 'text-gray-400 hover:text-primary hover:bg-primary/10'}`}
+                                                        className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-500' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'}`}
                                                     >
                                                         {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                                                     </button>
@@ -1167,7 +1167,7 @@ export function LedgerClient() {
                                                             initial={{ opacity: 0 }}
                                                             animate={{ opacity: 1 }}
                                                             exit={{ opacity: 0 }}
-                                                            className="flex items-center gap-1.5 text-xs font-semibold text-primary"
+                                                            className="flex items-center gap-1.5 text-xs font-semibold text-gray-900"
                                                         >
                                                             <Sparkles className="w-3.5 h-3.5 animate-pulse" /> AI Categorizing...
                                                         </motion.div>
@@ -1177,7 +1177,7 @@ export function LedgerClient() {
                                                             initial={{ opacity: 0, scale: 0.8 }}
                                                             animate={{ opacity: 1, scale: 1 }}
                                                             exit={{ opacity: 0, scale: 0.8 }}
-                                                            className="flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-bold"
+                                                            className="flex items-center gap-1.5 bg-gray-100 text-gray-900 px-2.5 py-1 rounded-full text-xs font-bold"
                                                         >
                                                             <Sparkles className="w-3 h-3" /> Auto-selected
                                                         </motion.div>
@@ -1191,7 +1191,7 @@ export function LedgerClient() {
                                                         setCat(e.target.value);
                                                         setShowAiBadge(false); // Manual override hides badge
                                                     }}
-                                                    className={`w-full text-sm font-semibold p-3 px-5 pr-10 bg-gray-50 border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all appearance-none shadow-soft-inner ${showAiBadge ? 'border-primary shadow-[0_0_0_2px_rgba(112,62,255,0.1)]' : 'border-gray-200 focus:border-primary'}`}
+                                                    className={`w-full text-sm font-semibold p-3 px-5 pr-10 bg-gray-50 border rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900/40 transition-all appearance-none shadow-soft-inner ${showAiBadge ? 'border-gray-900 shadow-[0_0_0_2px_rgba(0,0,0,0.05)]' : 'border-gray-200 focus:border-gray-900'}`}
                                                 >
                                                     {customCategories.map((c) => (
                                                         <option key={c} value={c}>{c}</option>
@@ -1205,7 +1205,7 @@ export function LedgerClient() {
 
                                         <button
                                             type="submit"
-                                            className="w-full bg-primary text-white font-bold py-4 rounded-full hover:bg-primary/90 hover:-translate-y-0.5 transition-all shadow-soft hover:shadow-soft-lg mt-4"
+                                            className="w-full bg-gray-900 text-white font-bold py-4 rounded-full hover:bg-black hover:-translate-y-0.5 transition-all shadow-soft hover:shadow-soft-lg mt-4"
                                         >
                                             Save Transaction
                                         </button>

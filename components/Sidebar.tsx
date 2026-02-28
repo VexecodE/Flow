@@ -39,7 +39,7 @@ export function Sidebar() {
     { icon: ShoppingBag, label: "Marketplace", href: "/marketplace" },
     { icon: CalendarDays, label: "Calendar", href: "/calendar" },
     { icon: Settings, label: "Settings", href: "#" },
-    { icon: User, label: "Profile", href: "#" },
+    { icon: User, label: "Profile", href: "/profile" },
   ];
 
   useEffect(() => {

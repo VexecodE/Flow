@@ -1,0 +1,35 @@
+﻿541: <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
+542: <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+552: <p className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider mb-2">Financials</p>
+571: className="w-full sm:w-auto bg-primary text-white font-bold px-6 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-soft hover:shadow-soft-lg text-sm"
+644: className="bg-gray-50 border-none rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer w-full sm:w-auto"
+682: <div className="bg-linear-to-br from-primary/10 to-secondary/10 rounded-[32px] border border-primary/20 shadow-soft p-8 relative overflow-hidden group">
+684: <Sparkles className="w-16 h-16 text-primary" />
+687: <Sparkles className="w-6 h-6 text-primary" />
+688: <h3 className="font-bold text-xl text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Smart Insight</h3>
+714: <div className="text-sm text-gray-700 font-semibold leading-relaxed mb-6 bg-white/50 rounded-2xl p-4 border border-primary/10">
+716: <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+723: className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+735: className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
+747: <div className="flex items-center justify-between bg-primary/5 p-4 rounded-2xl mb-6 border border-primary/10">
+750: <Bell className="w-4 h-4 text-primary" />
+760: className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
+792: <button className="flex-1 bg-primary text-white text-xs font-bold py-2 rounded-xl hover:bg-primary/90 transition-colors shadow-soft">
+874: <Receipt className="w-6 h-6 text-primary" /> Transactions
+884: className="py-3 pl-11 pr-5 text-sm font-semibold bg-gray-50 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all w-full"
+887: <div className="relative flex items-center bg-gray-50 rounded-full px-5 py-3 text-sm font-semibold focus-within:ring-2 focus-within:ring-primary/50 cursor-pointer transition-all w-full sm:w-auto">
+910: <th className="px-6 py-4 cursor-pointer hover:text-primary select-none" onClick={() => handleSort("date")}>
+918: <th className="px-6 py-4 text-right cursor-pointer hover:text-primary select-none" onClick={() => handleSort("amount")}>
+1020: <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+1038: : 'bg-primary/10 text-primary hover:bg-primary/20 hover:scale-105'
+1065: className={`mb-6 p-6 border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${isDragging ? 'border-primary bg-primary/5' : (receiptScanned ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300')}`}
+1078: <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+1079: <p className="text-xs font-bold text-primary">Extracting text via AI OCR...</p>
+1091: <Receipt className={`w-8 h-8 ${isDragging ? 'text-primary' : 'text-gray-400'} transition-colors`} />
+1125: className="w-full text-lg font-bold p-3 px-5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all shadow-soft-inner"
+1146: className="w-full text-sm font-semibold p-3 px-5 pr-12 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all shadow-soft-inner"
+1153: className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-500' : 'text-gray-400 hover:text-primary hover:bg-primary/10'}`}
+1170: className="flex items-center gap-1.5 text-xs font-semibold text-primary"
+1180: className="flex items-center gap-1.5 bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-bold"
+1194: className={`w-full text-sm font-semibold p-3 px-5 pr-10 bg-gray-50 border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all appearance-none shadow-soft-inner ${showAiBadge ? 'border-primary shadow-[0_0_0_2px_rgba(112,62,255,0.1)]' : 'border-gray-200 focus:border-primary'}`}
+1208: className="w-full bg-primary text-white font-bold py-4 rounded-full hover:bg-primary/90 hover:-translate-y-0.5 transition-all shadow-soft hover:shadow-soft-lg mt-4"
