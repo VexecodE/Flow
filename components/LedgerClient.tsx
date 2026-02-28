@@ -33,8 +33,7 @@ import { useFinance, Transaction } from "@/context/FinanceContext";
 const COLORS = ['#DBDC5D', '#8BBFDA', '#A9B81B', '#703EFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'];
 
 export function LedgerClient() {
-<<<<<<< HEAD
-    let { transactions, addTransaction, deleteTransaction } = useFinance();
+    let { transactions, addTransaction, deleteTransaction, insights, insightsLoading, loadInsights } = useFinance();
     let isDemoMode = false;
     let mockCashFlowData: any[] = [];
 
@@ -66,9 +65,6 @@ export function LedgerClient() {
             });
         }
     }
-=======
-    const { transactions, addTransaction, deleteTransaction, insights, insightsLoading, loadInsights } = useFinance();
->>>>>>> origin/main
     const containerRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<HTMLDivElement>(null);
 
@@ -722,7 +718,7 @@ export function LedgerClient() {
                                                 </div>
                                             </div>
                                         )}
-                                        <button 
+                                        <button
                                             onClick={() => loadInsights(90, true)}
                                             className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
                                         >
@@ -734,7 +730,7 @@ export function LedgerClient() {
                                         <p className="text-sm text-gray-700 font-semibold leading-relaxed mb-6">
                                             Start tracking your income and expenses to receive personalized, AI-driven insights on your spending habits.
                                         </p>
-                                        <button 
+                                        <button
                                             onClick={() => loadInsights(90, true)}
                                             className="text-sm font-bold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all"
                                         >

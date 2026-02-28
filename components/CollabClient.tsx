@@ -30,6 +30,7 @@ interface Developer {
     skills: string[];
     availability: string;
     rating: number;
+    credibilityScore?: number;
     split: string;
     avatar: string;
     bio: string;
@@ -176,39 +177,6 @@ export function CollabClient() {
             rating: 4.7,
             credibilityScore: 745,
             split: "Milestone Based",
-<<<<<<< HEAD
-            avatar: "JS"
-        },
-        {
-            name: "Emily Wang",
-            role: "CAD Designer",
-            skills: ["AutoCAD", "SolidWorks", "Fusion 360", "3D Modeling"],
-            availability: "Available Now",
-            rating: 4.9,
-            credibilityScore: 795,
-            split: "Hourly",
-            avatar: "EW"
-        },
-        {
-            name: "Marcus Johnson",
-            role: "Senior CAD Designer",
-            skills: ["Revit", "Rhino", "SketchUp"],
-            availability: "Part-time only",
-            rating: 4.8,
-            credibilityScore: 760,
-            split: "Project Based",
-            avatar: "MJ"
-        }
-    ];
-
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const filteredDevelopers = developers.filter(dev =>
-        dev.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dev.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        dev.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-=======
             avatar: "JS",
             bio: "Blockchain architect specializing in DeFi protocols and NFT platforms. Security-first mindset with extensive smart contract auditing experience. Built protocols managing $50M+ in TVL.",
             location: "Remote (Global)",
@@ -244,8 +212,68 @@ export function CollabClient() {
                 "🛡️ Zero security breaches",
                 "📚 Contributed to OpenZeppelin"
             ]
+        },
+        {
+            name: "Emily Wang",
+            role: "CAD Designer",
+            skills: ["AutoCAD", "SolidWorks", "Fusion 360", "3D Modeling"],
+            availability: "Available Now",
+            rating: 4.9,
+            credibilityScore: 795,
+            split: "Hourly",
+            avatar: "EW",
+            bio: "Industrial designer turning concepts into production-ready CAD models. I specialize in consumer electronics and ergonomic design structures.",
+            location: "Austin, TX",
+            email: "emily.wang@email.com",
+            experience: "6 years",
+            projects: [
+                {
+                    title: "Smart Ergonomic Chair",
+                    description: "Full CAD model for a health-focused office chair.",
+                    tech: ["SolidWorks", "Keyshot"],
+                    image: "🪑"
+                }
+            ],
+            achievements: [
+                "🏭 10+ designs in mass-production",
+                "🏆 Red Dot Design conceptual winner"
+            ]
+        },
+        {
+            name: "Marcus Johnson",
+            role: "Senior CAD Designer",
+            skills: ["Revit", "Rhino", "SketchUp"],
+            availability: "Part-time only",
+            rating: 4.8,
+            credibilityScore: 760,
+            split: "Project Based",
+            avatar: "MJ",
+            bio: "Architectural CAD specialist with a focus on modern commercial spaces and sustainable environmental design systems.",
+            location: "London, UK",
+            email: "mj.designs@email.com",
+            experience: "9 years",
+            projects: [
+                {
+                    title: "Eco-Friendly Hub",
+                    description: "Architectural schematics for a carbon-neutral shopping center.",
+                    tech: ["Revit", "AutoCAD Architecture"],
+                    image: "🏢"
+                }
+            ],
+            achievements: [
+                "LEED Certified Professional",
+                "Detailed 50+ commercial projects"
+            ]
         }
     ];
+
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredDevelopers = developers.filter(dev =>
+        dev.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dev.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        dev.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const pastCollaborations: PastCollaboration[] = [
         {
@@ -317,7 +345,6 @@ export function CollabClient() {
         setSelectedDeveloper(null);
         document.body.style.overflow = 'auto';
     };
->>>>>>> origin/main
 
     return (
         <div className="flex bg-transparent h-screen overflow-hidden relative">
@@ -331,7 +358,7 @@ export function CollabClient() {
                     <div ref={viewRef} className="max-w-6xl mx-auto space-y-6">
 
                         {/* Page Title */}
-                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex items-center justify-between gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
+                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center shrink-0">
                                     <Users className="w-6 h-6 text-indigo-600" />
@@ -354,7 +381,6 @@ export function CollabClient() {
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
                             {/* Main Content Area */}
                             <div className="lg:col-span-2 space-y-6">
                                 {/* Featured Opportunity */}
@@ -401,17 +427,12 @@ export function CollabClient() {
                                             View Map <ArrowRight className="w-3 h-3" />
                                         </button>
                                     </h3>
-<<<<<<< HEAD
                                     {filteredDevelopers.map((dev, i) => (
-                                        <div key={i} className="bg-white border border-gray-100 shadow-soft p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-soft-md transition-shadow cursor-pointer group">
-=======
-                                    {developers.map((dev, i) => (
-                                        <div 
-                                            key={i} 
+                                        <div
+                                            key={i}
                                             onClick={() => openDeveloperProfile(dev)}
                                             className="bg-white border border-gray-100 shadow-soft p-5 rounded-2xl flex flex-col sm:flex-row gap-5 items-start sm:items-center hover:shadow-soft-md hover:border-indigo-200 transition-all cursor-pointer group"
                                         >
->>>>>>> origin/main
                                             <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-50 to-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-lg font-black text-indigo-700 shrink-0 group-hover:scale-105 transition-transform">
                                                 {dev.avatar}
                                             </div>
@@ -444,7 +465,7 @@ export function CollabClient() {
                                                 <div className="text-[10px] font-bold uppercase text-gray-400 text-right">
                                                     {dev.split}
                                                 </div>
-                                                <button 
+                                                <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         openDeveloperProfile(dev);
@@ -484,13 +505,13 @@ export function CollabClient() {
                                                 active: 'bg-blue-50 text-blue-700 border-blue-200',
                                                 paused: 'bg-gray-50 text-gray-600 border-gray-200'
                                             };
-                                            
+
                                             return (
                                                 <div key={collab.id} className="p-4 hover:bg-gray-50 rounded-xl cursor-pointer transition-all border border-transparent hover:border-gray-200 group">
                                                     <div className="flex items-start gap-3 mb-3">
                                                         <div className="flex -space-x-2">
                                                             {collab.teamMembers.map((member, idx) => (
-                                                                <div 
+                                                                <div
                                                                     key={idx}
                                                                     className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-white"
                                                                     title={member.name}
@@ -518,7 +539,7 @@ export function CollabClient() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                                                         <div className="flex flex-wrap gap-1">
                                                             {collab.tech.slice(0, 3).map(tech => (
@@ -543,183 +564,183 @@ export function CollabClient() {
                                     </button>
                                 </div>
 
-            {/* Developer Profile Modal */}
-            {selectedDeveloper && (
-                <div 
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
-                    onClick={closeDeveloperProfile}
-                >
-                    <div 
-                        onClick={(e) => e.stopPropagation()}
-                        className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300"
-                    >
-                        {/* Header */}
-                        <div className="sticky top-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 p-6 flex items-start justify-between z-10">
-                            <div className="flex items-start gap-4">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 to-blue-500 border-4 border-white shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
-                                    {selectedDeveloper.avatar}
-                                </div>
-                                <div>
-                                    <h2 className="text-3xl font-bold text-gray-900 mb-1">{selectedDeveloper.name}</h2>
-                                    <p className="text-sm font-semibold text-gray-500 mb-3">{selectedDeveloper.role}</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                                            <MapPin className="w-4 h-4" />
-                                            {selectedDeveloper.location}
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                                            <Calendar className="w-4 h-4" />
-                                            {selectedDeveloper.experience} experience
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-sm font-bold text-amber-600">
-                                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                                            {selectedDeveloper.rating} rating
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button 
-                                onClick={closeDeveloperProfile}
-                                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors shrink-0"
-                            >
-                                <X className="w-5 h-5 text-gray-600" />
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6 space-y-6">
-                            {/* Bio */}
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-3">About</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{selectedDeveloper.bio}</p>
-                            </div>
-
-                            {/* Skills */}
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-3">Skills & Technologies</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {selectedDeveloper.skills.map(skill => (
-                                        <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-lg">
-                                            {skill}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Achievements */}
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                    <Award className="w-5 h-5 text-indigo-600" />
-                                    Achievements
-                                </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {selectedDeveloper.achievements.map((achievement, i) => (
-                                        <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                            <p className="text-sm font-semibold text-gray-700">{achievement}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Projects Portfolio */}
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                    <Code2 className="w-5 h-5 text-indigo-600" />
-                                    Featured Projects
-                                </h3>
-                                <div className="grid grid-cols-1 gap-4">
-                                    {selectedDeveloper.projects.map((project, i) => (
-                                        <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
-                                            <div className="flex items-start gap-4">
-                                                <div className="w-16 h-16 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0">
-                                                    {project.image}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                                        <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
-                                                        {project.link && (
-                                                            <a 
-                                                                href={project.link} 
-                                                                target="_blank" 
-                                                                rel="noopener noreferrer"
-                                                                className="text-indigo-600 hover:text-indigo-700 transition-colors"
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            >
-                                                                <ExternalLink className="w-4 h-4" />
-                                                            </a>
-                                                        )}
+                                {/* Developer Profile Modal */}
+                                {
+                                    selectedDeveloper && (
+                                        <div
+                                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                                            onClick={() => setSelectedDeveloper(null)}
+                                        >
+                                            <div
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300"
+                                            >
+                                                {/* Header */}
+                                                <div className="sticky top-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 p-6 flex items-start justify-between z-10">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 to-blue-500 border-4 border-white shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
+                                                            {selectedDeveloper.avatar}
+                                                        </div>
+                                                        <div>
+                                                            <h2 className="text-3xl font-bold text-gray-900 mb-1">{selectedDeveloper.name}</h2>
+                                                            <p className="text-sm font-semibold text-gray-500 mb-3">{selectedDeveloper.role}</p>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                <div className="flex items-center gap-1.5 text-sm text-gray-600">
+                                                                    <MapPin className="w-4 h-4" />
+                                                                    {selectedDeveloper.location}
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-sm text-gray-600">
+                                                                    <Calendar className="w-4 h-4" />
+                                                                    {selectedDeveloper.experience} experience
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-sm font-bold text-amber-600">
+                                                                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                                                    {selectedDeveloper.rating} rating
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <p className="text-sm text-gray-600 mb-3 leading-relaxed">{project.description}</p>
-                                                    <div className="flex flex-wrap gap-1.5">
-                                                        {project.tech.map(tech => (
-                                                            <span key={tech} className="text-[10px] uppercase font-bold bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded">
-                                                                {tech}
-                                                            </span>
-                                                        ))}
+                                                    <button
+                                                        onClick={closeDeveloperProfile}
+                                                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors shrink-0"
+                                                    >
+                                                        <X className="w-5 h-5 text-gray-600" />
+                                                    </button>
+                                                </div>
+
+                                                {/* Content */}
+                                                <div className="p-6 space-y-6">
+                                                    {/* Bio */}
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900 mb-3">About</h3>
+                                                        <p className="text-sm text-gray-600 leading-relaxed">{selectedDeveloper.bio}</p>
+                                                    </div>
+
+                                                    {/* Skills */}
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Skills & Technologies</h3>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {selectedDeveloper.skills.map(skill => (
+                                                                <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-2 rounded-lg">
+                                                                    {skill}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Achievements */}
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                                            <Award className="w-5 h-5 text-indigo-600" />
+                                                            Achievements
+                                                        </h3>
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                            {selectedDeveloper.achievements.map((achievement, i) => (
+                                                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                                    <p className="text-sm font-semibold text-gray-700">{achievement}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Projects Portfolio */}
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                                            <Code2 className="w-5 h-5 text-indigo-600" />
+                                                            Featured Projects
+                                                        </h3>
+                                                        <div className="grid grid-cols-1 gap-4">
+                                                            {selectedDeveloper.projects.map((project, i) => (
+                                                                <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
+                                                                    <div className="flex items-start gap-4">
+                                                                        <div className="w-16 h-16 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0">
+                                                                            {project.image}
+                                                                        </div>
+                                                                        <div className="flex-1">
+                                                                            <div className="flex items-start justify-between gap-2 mb-2">
+                                                                                <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
+                                                                                {project.link && (
+                                                                                    <a
+                                                                                        href={project.link}
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        className="text-indigo-600 hover:text-indigo-700 transition-colors"
+                                                                                        onClick={(e) => e.stopPropagation()}
+                                                                                    >
+                                                                                        <ExternalLink className="w-4 h-4" />
+                                                                                    </a>
+                                                                                )}
+                                                                            </div>
+                                                                            <p className="text-sm text-gray-600 mb-3 leading-relaxed">{project.description}</p>
+                                                                            <div className="flex flex-wrap gap-1.5">
+                                                                                {project.tech.map(tech => (
+                                                                                    <span key={tech} className="text-[10px] uppercase font-bold bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded">
+                                                                                        {tech}
+                                                                                    </span>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Contact & Actions */}
+                                                    <div className="border-t border-gray-200 pt-6 space-y-4">
+                                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Get in Touch</h3>
+
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                                <div className="text-xs font-bold uppercase text-gray-400 mb-1">Availability</div>
+                                                                <div className="text-sm font-bold text-emerald-600">{selectedDeveloper.availability}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                                <div className="text-xs font-bold uppercase text-gray-400 mb-1">Compensation</div>
+                                                                <div className="text-sm font-bold text-gray-900">{selectedDeveloper.split}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex flex-wrap gap-3">
+                                                            <button className="flex-1 min-w-[200px] bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg">
+                                                                <MessageSquare className="w-4 h-4" />
+                                                                Send Message
+                                                            </button>
+                                                            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
+                                                                <Mail className="w-4 h-4" />
+                                                                Email
+                                                            </button>
+                                                            {selectedDeveloper.github && (
+                                                                <a
+                                                                    href={`https://github.com/${selectedDeveloper.github}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="bg-gray-900 hover:bg-black text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <Github className="w-4 h-4" />
+                                                                    GitHub
+                                                                </a>
+                                                            )}
+                                                            {selectedDeveloper.linkedin && (
+                                                                <a
+                                                                    href={`https://linkedin.com/in/${selectedDeveloper.linkedin}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <Linkedin className="w-4 h-4" />
+                                                                    LinkedIn
+                                                                </a>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Contact & Actions */}
-                            <div className="border-t border-gray-200 pt-6 space-y-4">
-                                <h3 className="text-lg font-bold text-gray-900 mb-3">Get in Touch</h3>
-                                
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                        <div className="text-xs font-bold uppercase text-gray-400 mb-1">Availability</div>
-                                        <div className="text-sm font-bold text-emerald-600">{selectedDeveloper.availability}</div>
-                                    </div>
-                                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                        <div className="text-xs font-bold uppercase text-gray-400 mb-1">Compensation</div>
-                                        <div className="text-sm font-bold text-gray-900">{selectedDeveloper.split}</div>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-wrap gap-3">
-                                    <button className="flex-1 min-w-[200px] bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg">
-                                        <MessageSquare className="w-4 h-4" />
-                                        Send Message
-                                    </button>
-                                    <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
-                                        <Mail className="w-4 h-4" />
-                                        Email
-                                    </button>
-                                    {selectedDeveloper.github && (
-                                        <a 
-                                            href={`https://github.com/${selectedDeveloper.github}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="bg-gray-900 hover:bg-black text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Github className="w-4 h-4" />
-                                            GitHub
-                                        </a>
                                     )}
-                                    {selectedDeveloper.linkedin && (
-                                        <a 
-                                            href={`https://linkedin.com/in/${selectedDeveloper.linkedin}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Linkedin className="w-4 h-4" />
-                                            LinkedIn
-                                        </a>
-                                    )}
-                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-                            </div>
-
                         </div>
                     </div>
                 </main>
