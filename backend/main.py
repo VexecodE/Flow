@@ -2,11 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from transactions import transaction_router
 from insights import insights_router
+from reminders import reminder_router
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI(
     title="Flo Finance Backend API",
-    description="Backend API for Flo personal finance management - Transactions & AI-Powered Insights",
+    description="Backend API for Flo personal finance management - Transactions, AI Insights & Email Reminders",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -27,9 +32,7 @@ app.add_middleware(
 # Include Routers
 app.include_router(transaction_router, prefix="/api")
 app.include_router(insights_router, prefix="/api")
-
-# Include Smart Insights Router
-app.include_router(insights_router, prefix="/api")
+app.include_router(reminder_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")
@@ -49,6 +52,7 @@ def read_root():
             "stats": "/api/transactions/stats/summary",
             "categories": "/api/transactions/categories/list",
             "search": "/api/transactions/search/query",
+            "reminders": "/api/reminders/emi",
             "docs": "/docs",
             "redoc": "/redoc"
         }

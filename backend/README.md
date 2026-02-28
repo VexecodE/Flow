@@ -94,7 +94,46 @@ python test_ollama.py
 - You'll see: `⚠️ Ollama not available, using statistical insights only`
 - All features work without Ollama, just without AI-powered recommendations
 
-### 4. Run the Server
+### 4. Setup Email Reminders (Optional - for EMI Notifications)
+
+**CIBIL Growth Engine** includes email reminder functionality for EMI payments. This is optional - the system works in demo/simulation mode without SMTP configuration.
+
+**Configure SMTP (Gmail Example):**
+
+1. Generate an App Password (not your regular Gmail password):
+   - Go to: https://myaccount.google.com/apppasswords
+   - Select "Mail" and your device
+   - Copy the 16-character password
+
+2. Update your `.env` file:
+```env
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password-here
+FROM_EMAIL=noreply@flofinance.com
+```
+
+3. Test email configuration:
+```bash
+python test_email_reminders.py
+```
+
+**Demo Mode (Without SMTP):**
+- If SMTP credentials are not configured, emails will be simulated
+- Email content is logged to console for testing
+- All functionality works without sending actual emails
+- Perfect for hackathons and demos!
+
+**Email Features:**
+- ✅ Automatic email to logged-in user
+- ✅ Beautiful HTML email template
+- ✅ EMI details with due date and amount
+- ✅ Direct link back to Flo Finance app
+- ✅ Toggle on/off from the UI
+- ✅ Instant confirmation when enabled
+
+### 5. Run the Server
 
 ```bash
 python main.py

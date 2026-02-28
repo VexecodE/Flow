@@ -29,6 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 import { useFinance, Transaction } from "@/context/FinanceContext";
+import { createClient } from "@/utils/supabase/client";
 
 const COLORS = ['#DBDC5D', '#8BBFDA', '#A9B81B', '#703EFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'];
 
@@ -70,7 +71,14 @@ export function LedgerClient() {
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
-    const [isEmiReminderActive, setIsEmiReminderActive] = useState(true);
+    const [isEmiReminderActive, setIsEmiReminderActive] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [isSendingEmail, setIsSendingEmail] = useState(false);
+    const [emailStatus, setEmailStatus] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ 
+        show: false, 
+        message: '', 
+        type: 'success' 
+    });
 
     // Custom categories state
     const [customCategories, setCustomCategories] = useState<string[]>([
@@ -265,6 +273,83 @@ export function LedgerClient() {
             );
         }
     }, []);
+
+    // Fetch user email from Supabase auth
+    useEffect(() => {
+        const fetchUser = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email) {
+                setUserEmail(user.email);
+            }
+        };
+        fetchUser();
+    }, []);
+
+    // Function to send EMI reminder email
+    const sendEmiReminderEmail = async () => {
+        if (!userEmail) {
+            setEmailStatus({ 
+                show: true, 
+                message: 'Please log in to receive email reminders', 
+                type: 'error' 
+            });
+            setTimeout(() => setEmailStatus({ show: false, message: '', type: 'success' }), 3000);
+            return;
+        }
+
+        setIsSendingEmail(true);
+
+        try {
+            const response = await fetch('http://localhost:8000/api/reminders/emi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_email: userEmail,
+                    loan_type: 'Home Loan',
+                    bank_name: 'HDFC Bank',
+                    amount: 45200.0,
+                    due_days: 5,
+                    due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setEmailStatus({ 
+                    show: true, 
+                    message: `✅ Email reminder sent to ${userEmail}`, 
+                    type: 'success' 
+                });
+            } else {
+                throw new Error('Failed to send email');
+            }
+        } catch (error) {
+            console.error('Email error:', error);
+            setEmailStatus({ 
+                show: true, 
+                message: '❌ Failed to send email reminder', 
+                type: 'error' 
+            });
+        } finally {
+            setIsSendingEmail(false);
+            setTimeout(() => setEmailStatus({ show: false, message: '', type: 'success' }), 5000);
+        }
+    };
+
+    // Handle toggle change
+    const handleEmiToggle = async () => {
+        const newState = !isEmiReminderActive;
+        setIsEmiReminderActive(newState);
+        
+        if (newState) {
+            // When enabling, send email reminder
+            await sendEmiReminderEmail();
+        }
+    };
 
     const totalIncome = isDemoMode ? 245000 : transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
     const totalExpense = isDemoMode ? 42100 : transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
@@ -750,18 +835,45 @@ export function LedgerClient() {
                                             <Bell className="w-4 h-4 text-primary" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-gray-900 leading-tight">EMI Reminders</p>
-                                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 mt-0.5">Send a notification 5 days before the EMI date</p>
+                                            <p className="text-sm font-bold text-gray-900 leading-tight">EMI Email Reminders</p>
+                                            <p className="text-[10px] sm:text-xs font-semibold text-gray-500 mt-0.5">
+                                                {userEmail ? `Notifications sent to ${userEmail}` : 'Get email alerts 5 days before EMI date'}
+                                            </p>
                                         </div>
                                     </div>
-                                    {/* Mock Toggle Switch */}
+                                    {/* Toggle Switch with Email Integration */}
                                     <div
-                                        onClick={() => setIsEmiReminderActive(!isEmiReminderActive)}
-                                        className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
+                                        onClick={handleEmiToggle}
+                                        className={`w-11 h-6 rounded-full relative cursor-pointer shrink-0 transition-colors duration-300 ${
+                                            isSendingEmail ? 'opacity-50 cursor-wait' : ''
+                                        } ${isEmiReminderActive ? 'bg-primary' : 'bg-gray-300'}`}
                                     >
-                                        <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${isEmiReminderActive ? 'left-[22px]' : 'left-0.5'}`}></div>
+                                        <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-all duration-300 ${isEmiReminderActive ? 'left-[22px]' : 'left-0.5'} flex items-center justify-center`}>
+                                            {isSendingEmail && <Loader2 className="w-3 h-3 text-primary animate-spin" />}
+                                        </div>
                                     </div>
                                 </div>
+
+                                {/* Email Status Message */}
+                                <AnimatePresence>
+                                    {emailStatus.show && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto', marginBottom: 16 }}
+                                            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className={`${
+                                                emailStatus.type === 'success' 
+                                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                                                    : 'bg-red-50 border-red-200 text-red-800'
+                                            } border rounded-xl p-3 text-sm font-semibold`}>
+                                                {emailStatus.message}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
                                 <AnimatePresence>
                                     {isEmiReminderActive && (
