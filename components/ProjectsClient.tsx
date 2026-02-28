@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import gsap from "gsap";
 import { Header } from "./Header";
 import { DashboardWaves } from "./DashboardWaves";
+import { GitHubUploadModal } from "./GitHubUploadModal";
+import { GitHubProjectCard } from "./GitHubProjectCard";
 import {
     Briefcase,
     Zap,
@@ -20,6 +22,8 @@ import {
 
 export function ProjectsClient() {
     const viewRef = useRef<HTMLDivElement>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [githubProjects, setGithubProjects] = useState<any[]>([]);
 
     useEffect(() => {
         if (viewRef.current) {
@@ -30,6 +34,14 @@ export function ProjectsClient() {
             );
         }
     }, []);
+
+    const handleUploadSuccess = (projectData: any) => {
+        setGithubProjects((prev) => [projectData, ...prev]);
+    };
+
+    const handleRemoveProject = (index: number) => {
+        setGithubProjects((prev) => prev.filter((_, i) => i !== index));
+    };
 
     const recentProjects = [
         {
@@ -77,7 +89,10 @@ export function ProjectsClient() {
                                     <p className="text-sm font-medium text-gray-500 mt-1">Manage and track your active developments and past works.</p>
                                 </div>
                             </div>
-                            <button className="whitespace-nowrap flex items-center gap-2 bg-gray-900 text-white border border-gray-900 px-6 py-3 rounded-xl text-sm font-bold shadow-soft hover:bg-black transition-all duration-300">
+                            <button 
+                                onClick={() => setIsModalOpen(true)}
+                                className="whitespace-nowrap flex items-center gap-2 bg-gray-900 text-white border border-gray-900 px-6 py-3 rounded-xl text-sm font-bold shadow-soft hover:bg-black transition-all duration-300"
+                            >
                                 <UploadCloud className="w-5 h-5" />
                                 Upload Recent Work
                             </button>
@@ -173,9 +188,40 @@ export function ProjectsClient() {
                             </div>
 
                         </div>
+
+                        {/* GitHub Projects Section */}
+                        {githubProjects.length > 0 && (
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                                        <Github className="w-5 h-5" />
+                                        Uploaded GitHub Projects
+                                    </h2>
+                                    <span className="text-sm font-medium text-gray-500">
+                                        {githubProjects.length} {githubProjects.length === 1 ? 'project' : 'projects'}
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {githubProjects.map((project, index) => (
+                                        <GitHubProjectCard
+                                            key={index}
+                                            project={project}
+                                            onRemove={() => handleRemoveProject(index)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </main>
             </div>
+
+            {/* Upload Modal */}
+            <GitHubUploadModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onUploadSuccess={handleUploadSuccess}
+            />
         </div>
     );
 }

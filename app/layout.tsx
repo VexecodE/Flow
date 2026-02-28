@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { FinanceProvider } from "@/context/FinanceContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { FloatingChatButton } from "@/components/FloatingChatButton";
 
 const proximaNova = localFont({
   src: "./fonts/ProximaNova-Regular.otf",
@@ -60,6 +61,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <FinanceProvider>
             {children}
+            <FloatingChatButton />
           </FinanceProvider>
         </ThemeProvider>
       </body>

@@ -14,7 +14,8 @@ import {
     MapPin,
     ArrowRight,
     MoreHorizontal,
-    X
+    X,
+    Bell
 } from "lucide-react";
 
 export function CalendarClient() {
@@ -23,6 +24,7 @@ export function CalendarClient() {
     const [expandedDate, setExpandedDate] = useState<number | null>(null);
     const [newEventTitle, setNewEventTitle] = useState("");
     const [newEventTime, setNewEventTime] = useState("");
+    const [showNotification, setShowNotification] = useState(false);
 
     const [events, setEvents] = useState([
         { day: 5, title: "Product Sync", time: "10:00 AM", type: "meeting" },
@@ -50,6 +52,26 @@ export function CalendarClient() {
             );
         }
     }, [currentDate]);
+
+    // Show demo notification after 2 seconds
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNotification(true);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Auto-hide notification after 8 seconds
+    useEffect(() => {
+        if (showNotification) {
+            const timer = setTimeout(() => {
+                setShowNotification(false);
+            }, 8000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [showNotification]);
 
     // Calendar logic
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -299,6 +321,35 @@ export function CalendarClient() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Notification Popup */}
+            {showNotification && (
+                <div className="fixed top-20 right-4 z-[150] max-w-sm animate-in slide-in-from-right duration-500">
+                    <div className="bg-blue-50 border-2 border-blue-500 rounded-2xl shadow-2xl p-4">
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                                <Bell className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2 mb-1">
+                                    <h4 className="text-sm font-bold text-gray-900 leading-tight">Upcoming Event</h4>
+                                    <button
+                                        onClick={() => setShowNotification(false)}
+                                        className="w-6 h-6 rounded-lg bg-white/50 hover:bg-white flex items-center justify-center transition-colors shrink-0"
+                                    >
+                                        <X className="w-4 h-4 text-gray-600" />
+                                    </button>
+                                </div>
+                                <p className="text-base font-bold text-gray-900 mb-2">Client Demo</p>
+                                <div className="flex items-center gap-2 text-xs font-semibold text-gray-700">
+                                    <Clock className="w-3.5 h-3.5" />
+                                    Starting at 11:00 AM
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

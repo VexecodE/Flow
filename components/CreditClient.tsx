@@ -14,13 +14,22 @@ import {
     TrendingUp,
     Zap,
     Briefcase,
-    Clock
+    Clock,
+    Calendar,
+    BarChart3
 } from "lucide-react";
 import { useFinance } from "@/context/FinanceContext";
 
 export function CreditClient() {
     const viewRef = useRef<HTMLDivElement>(null);
     const { transactions } = useFinance();
+
+    // Reputation Timeline Data
+    const reputationTimeline = [
+        { year: "2024", score: 480, percentage: (480 / 850) * 100 },
+        { year: "2025", score: 590, percentage: (590 / 850) * 100 },
+        { year: "2026", score: 695, percentage: (695 / 850) * 100 }
+    ];
 
     // Calculate a mock score based on transaction behaviour and active usage
     const baseScore = 650;
@@ -191,6 +200,85 @@ export function CreditClient() {
                                 </div>
                             </div>
 
+                        </div>
+
+                        {/* Reputation Timeline - Compact */}
+                        <div className="bg-white border border-gray-100 shadow-soft p-5 rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                                        <BarChart3 className="w-5 h-5 text-gray-900" />
+                                        Reputation Timeline
+                                    </h2>
+                                    <p className="text-xs font-medium text-gray-500 mt-0.5">Your credibility growth story over time</p>
+                                </div>
+                            </div>
+
+                            {/* Compact Timeline */}
+                            <div className="space-y-3">
+                                {reputationTimeline.map((item, index) => {
+                                    const isLatest = index === reputationTimeline.length - 1;
+                                    const growth = index > 0 ? item.score - reputationTimeline[index - 1].score : 0;
+                                    
+                                    return (
+                                        <div key={item.year} className="flex items-center gap-3">
+                                            {/* Year */}
+                                            <div className={`text-sm font-bold w-12 ${isLatest ? 'text-gray-900' : 'text-gray-500'}`}>
+                                                {item.year}
+                                            </div>
+
+                                            {/* Progress Bar */}
+                                            <div className="flex-1 relative h-8 overflow-hidden rounded-xl bg-gray-100 border border-gray-200">
+                                                <div 
+                                                    className={`h-full rounded-xl transition-all duration-1000 ease-out ${
+                                                        isLatest 
+                                                            ? 'bg-gradient-to-r from-gray-800 to-black' 
+                                                            : 'bg-gradient-to-r from-gray-400 to-gray-500'
+                                                    }`}
+                                                    style={{ 
+                                                        width: `${item.percentage}%`,
+                                                        transitionDelay: `${index * 150}ms`
+                                                    }}
+                                                ></div>
+                                            </div>
+
+                                            {/* Score */}
+                                            <div className="flex items-center gap-2">
+                                                <span className={`text-lg font-black ${isLatest ? 'text-gray-900' : 'text-gray-600'}`}>
+                                                    {item.score}
+                                                </span>
+                                                {growth > 0 && (
+                                                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700">
+                                                        +{growth}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Compact Stats */}
+                            <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-center">
+                                <div>
+                                    <div className="text-lg font-black text-gray-900">
+                                        +{reputationTimeline[reputationTimeline.length - 1].score - reputationTimeline[0].score}
+                                    </div>
+                                    <div className="text-[10px] font-bold text-gray-500 uppercase">Growth</div>
+                                </div>
+                                <div>
+                                    <div className="text-lg font-black text-emerald-600">
+                                        {Math.round(((reputationTimeline[reputationTimeline.length - 1].score - reputationTimeline[0].score) / reputationTimeline[0].score) * 100)}%
+                                    </div>
+                                    <div className="text-[10px] font-bold text-gray-500 uppercase">Increase</div>
+                                </div>
+                                <div>
+                                    <div className="text-lg font-black text-gray-900">
+                                        {reputationTimeline.length}
+                                    </div>
+                                    <div className="text-[10px] font-bold text-gray-500 uppercase">Years</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </main>

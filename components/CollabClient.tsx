@@ -570,17 +570,17 @@ export function CollabClient() {
                                 {
                                     selectedDeveloper && (
                                         <div
-                                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                                            className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
                                             onClick={() => setSelectedDeveloper(null)}
                                         >
                                             <div
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="bg-white/70 backdrop-blur-2xl rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300 border border-white/40"
+                                                className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200"
                                             >
                                                 {/* Header */}
-                                                <div className="sticky top-0 bg-white/60 backdrop-blur-xl border-b border-white/30 p-6 flex items-start justify-between z-10">
+                                                <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-start justify-between z-10">
                                                     <div className="flex items-start gap-4">
-                                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-gray-800 to-gray-900 border-4 border-white/50 shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
+                                                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-gray-800 to-gray-900 border-4 border-white shadow-lg flex items-center justify-center text-3xl font-black text-white shrink-0">
                                                             {selectedDeveloper.avatar}
                                                         </div>
                                                         <div>
@@ -604,7 +604,7 @@ export function CollabClient() {
                                                     </div>
                                                     <button
                                                         onClick={closeDeveloperProfile}
-                                                        className="w-10 h-10 rounded-full bg-white/40 hover:bg-white/60 backdrop-blur-sm flex items-center justify-center transition-colors shrink-0 border border-white/30"
+                                                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors shrink-0 border border-gray-300"
                                                     >
                                                         <X className="w-5 h-5 text-gray-600" />
                                                     </button>
@@ -623,7 +623,7 @@ export function CollabClient() {
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3">Skills & Technologies</h3>
                                                         <div className="flex flex-wrap gap-2">
                                                             {selectedDeveloper.skills.map(skill => (
-                                                                <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-white/50 border border-white/40 text-gray-900 px-3 py-2 rounded-lg backdrop-blur-sm">
+                                                                <span key={skill} className="text-xs uppercase font-bold tracking-wider bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-lg">
                                                                     {skill}
                                                                 </span>
                                                             ))}
@@ -638,7 +638,7 @@ export function CollabClient() {
                                                         </h3>
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                             {selectedDeveloper.achievements.map((achievement, i) => (
-                                                                <div key={i} className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
+                                                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                                                                     <p className="text-sm font-semibold text-gray-700">{achievement}</p>
                                                                 </div>
                                                             ))}
@@ -653,9 +653,9 @@ export function CollabClient() {
                                                         </h3>
                                                         <div className="grid grid-cols-1 gap-4">
                                                             {selectedDeveloper.projects.map((project, i) => (
-                                                                <div key={i} className="bg-white/30 border border-white/30 rounded-2xl p-5 hover:bg-white/50 hover:shadow-md transition-all backdrop-blur-sm">
+                                                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-2xl p-5 hover:bg-gray-100 hover:shadow-md transition-all">
                                                                     <div className="flex items-start gap-4">
-                                                                        <div className="w-16 h-16 bg-white/60 rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0 backdrop-blur-sm">
+                                                                        <div className="w-16 h-16 bg-white rounded-xl shadow-sm flex items-center justify-center text-3xl shrink-0 border border-gray-200">
                                                                             {project.image}
                                                                         </div>
                                                                         <div className="flex-1">
@@ -676,7 +676,7 @@ export function CollabClient() {
                                                                             <p className="text-sm text-gray-600 mb-3 leading-relaxed">{project.description}</p>
                                                                             <div className="flex flex-wrap gap-1.5">
                                                                                 {project.tech.map(tech => (
-                                                                                    <span key={tech} className="text-[10px] uppercase font-bold bg-white/50 border border-white/30 text-gray-600 px-2 py-1 rounded">
+                                                                                    <span key={tech} className="text-[10px] uppercase font-bold bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded">
                                                                                         {tech}
                                                                                     </span>
                                                                                 ))}
@@ -689,15 +689,15 @@ export function CollabClient() {
                                                     </div>
 
                                                     {/* Contact & Actions */}
-                                                    <div className="border-t border-white/30 pt-6 space-y-4">
+                                                    <div className="border-t border-gray-200 pt-6 space-y-4">
                                                         <h3 className="text-lg font-bold text-gray-900 mb-3">Get in Touch</h3>
 
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                            <div className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
+                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                                                                 <div className="text-xs font-bold uppercase text-gray-400 mb-1">Availability</div>
                                                                 <div className="text-sm font-bold text-gray-900">{selectedDeveloper.availability}</div>
                                                             </div>
-                                                            <div className="bg-white/40 border border-white/30 rounded-xl p-4 backdrop-blur-sm">
+                                                            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                                                                 <div className="text-xs font-bold uppercase text-gray-400 mb-1">Compensation</div>
                                                                 <div className="text-sm font-bold text-gray-900">{selectedDeveloper.split}</div>
                                                             </div>
@@ -708,7 +708,7 @@ export function CollabClient() {
                                                                 <MessageSquare className="w-4 h-4" />
                                                                 Send Message
                                                             </button>
-                                                            <button className="bg-white/40 hover:bg-white/60 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 backdrop-blur-sm border border-white/30">
+                                                            <button className="bg-gray-50 hover:bg-gray-100 text-gray-700 py-3.5 px-6 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 border border-gray-200">
                                                                 <Mail className="w-4 h-4" />
                                                                 Email
                                                             </button>

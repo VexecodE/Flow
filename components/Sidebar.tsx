@@ -55,7 +55,7 @@ export function Sidebar() {
       {/* Desktop Sidebar */}
       <aside
         ref={sidebarRef}
-        className="hidden lg:flex w-[280px] h-[calc(100vh-32px)] my-4 ml-4 bg-white rounded-[32px] shadow-soft border border-gray-100 flex-col pt-8 pb-6 overflow-y-auto hide-scrollbar shrink-0 z-50 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300"
+        className="hidden lg:flex w-[280px] h-[calc(100vh-32px)] my-4 ml-4 bg-white rounded-[32px] shadow-soft flex-col pt-8 pb-6 overflow-y-auto hide-scrollbar shrink-0 z-50 hover:shadow-soft-lg transition-all duration-300"
       >
         <style dangerouslySetInnerHTML={{
           __html: `

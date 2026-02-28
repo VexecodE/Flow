@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from transactions import transaction_router
 from insights import insights_router
 from reminders import reminder_router
+from chatbot import router as chatbot_router
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -33,6 +34,7 @@ app.add_middleware(
 app.include_router(transaction_router, prefix="/api")
 app.include_router(insights_router, prefix="/api")
 app.include_router(reminder_router, prefix="/api")
+app.include_router(chatbot_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")
@@ -52,6 +54,8 @@ def read_root():
             "stats": "/api/transactions/stats/summary",
             "categories": "/api/transactions/categories/list",
             "search": "/api/transactions/search/query",
+            "chatbot": "/api/chat/message",
+            "chatbot_status": "/api/chat/status",
             "reminders": "/api/reminders/emi",
             "docs": "/docs",
             "redoc": "/redoc"
