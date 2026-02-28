@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0ebf5;
-  /* Soft light purple for contrast against white cards */
+  --background: #F4F5F7;
+  /* Soft off-white for contrast against white cards */
   --foreground: #111827;
   /* Soft black for text */
 
@@ -55,23 +55,25 @@
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #f0ebf5;
-    --foreground: #111827;
-    --primary: #B026FF;
-    --secondary: #00E5FF;
-    --accent: #CCFF00;
-    --accent-light: #F4FFB8;
-    --card: #FFFFFF;
-    --card-foreground: #111827;
-    --border: #E5E7EB;
-  }
+html {
+  transition: filter 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+html.dark {
+  filter: invert(1) hue-rotate(180deg);
+  background: white;
+  /* Give a solid background to invert properly */
+}
+
+/* Revert inversion for images, video, and SVGs so they display normally */
+html.dark img,
+html.dark video,
+html.dark svg {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  /* Fallback to clean sans by default */
 }

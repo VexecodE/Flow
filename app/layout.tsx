@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { FinanceProvider } from "@/context/FinanceContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const proximaNova = localFont({
   src: "./fonts/ProximaNova-Regular.otf",
@@ -54,11 +55,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${proximaNova.variable} ${spaceMono.variable} ${anton.variable} ${fatKat.variable} ${kolRanko.variable} ${pixel.variable} font-sans antialiased tracking-tight`}
+        className={`${proximaNova.variable} ${spaceMono.variable} ${anton.variable} ${fatKat.variable} ${kolRanko.variable} ${pixel.variable} font-sans antialiased tracking-tight bg-background text-foreground transition-colors duration-300`}
       >
-        <FinanceProvider>
-          {children}
-        </FinanceProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <FinanceProvider>
+            {children}
+          </FinanceProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

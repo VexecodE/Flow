@@ -20,7 +20,7 @@ import {
     ChevronDown,
     Send
 } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 import { useFinance, Transaction } from "@/context/FinanceContext";
 
@@ -31,13 +31,13 @@ export function DashboardClient() {
     // --- Dynamic Calculations ---
 
     // 1. Net Worth (Total balance across all accounts)
-    const netWorth = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    let netWorth = accounts.reduce((sum, acc) => sum + acc.balance, 0);
 
     // 2. Total Assets (Cash + Digital Assets)
-    const totalAssets = accounts.filter(a => a.type !== 'Credit Card').reduce((sum, a) => sum + a.balance, 0);
+    let totalAssets = accounts.filter(a => a.type !== 'Credit Card').reduce((sum, a) => sum + a.balance, 0);
 
     // 3. Total Liabilities (Credit Cards)
-    const totalLiabilities = Math.abs(accounts.filter(a => a.type === 'Credit Card').reduce((sum, a) => sum + a.balance, 0));
+    let totalLiabilities = Math.abs(accounts.filter(a => a.type === 'Credit Card').reduce((sum, a) => sum + a.balance, 0));
 
     // 4. Monthly Income/Expenses (Dynamic based on last 30 days)
     const now = new Date();
@@ -53,15 +53,15 @@ export function DashboardClient() {
         return `${percent > 0 ? '+' : ''}${percent.toFixed(1)}%`;
     };
 
-    const monthlyIncome = currentPeriodTransactions.filter(t => t.amount > 0).reduce((sym, t) => sym + t.amount, 0);
+    let monthlyIncome = currentPeriodTransactions.filter(t => t.amount > 0).reduce((sym, t) => sym + t.amount, 0);
     const prevIncome = previousPeriodTransactions.filter(t => t.amount > 0).reduce((sym, t) => sym + t.amount, 0);
-    const incomeTrend = calcTrend(monthlyIncome, prevIncome);
+    let incomeTrend = calcTrend(monthlyIncome, prevIncome);
 
-    const monthlyExpenses = currentPeriodTransactions.filter(t => t.amount < 0).reduce((sym, t) => sym + Math.abs(t.amount), 0);
+    let monthlyExpenses = currentPeriodTransactions.filter(t => t.amount < 0).reduce((sym, t) => sym + Math.abs(t.amount), 0);
     const prevExpenses = previousPeriodTransactions.filter(t => t.amount < 0).reduce((sym, t) => sym + Math.abs(t.amount), 0);
-    const expenseTrend = calcTrend(monthlyExpenses, prevExpenses);
+    let expenseTrend = calcTrend(monthlyExpenses, prevExpenses);
 
-    const netCashFlow = monthlyIncome - monthlyExpenses;
+    let netCashFlow = monthlyIncome - monthlyExpenses;
     const cashFlowText = transactions.length === 0
         ? "Connect your accounts and start tracking transactions to see your financial health."
         : netCashFlow > 0
@@ -81,7 +81,7 @@ export function DashboardClient() {
         else current.expenses += Math.abs(txn.amount);
     });
     // Array format for Recharts
-    const cashFlowPerformance = Array.from(cashFlowMap.values()).reverse(); // Reverse to read chronologically loosely
+    let cashFlowPerformance = Array.from(cashFlowMap.values()).reverse(); // Reverse to read chronologically loosely
 
     // 6. Top Spending Categories
     const categoryTotals = transactions.filter(t => t.amount < 0).reduce((acc, txn) => {
@@ -89,7 +89,7 @@ export function DashboardClient() {
         return acc;
     }, {} as Record<string, number>);
 
-    const topSpendingCategories = Object.entries(categoryTotals)
+    let topSpendingCategories = Object.entries(categoryTotals)
         .map(([name, amount]) => ({
             name,
             amount,
@@ -99,7 +99,55 @@ export function DashboardClient() {
         .slice(0, 3); // Top 3
 
     // 7. Recent Transactions (Top 5)
-    const recentTransactions = transactions.slice(0, 5);
+    let recentTransactions = transactions.slice(0, 5);
+
+    // --- Mock Data Injection for Empty Accounts / Demo display ---
+    if (transactions.length === 0) {
+        netWorth = 84112;
+        monthlyIncome = 245000;
+        monthlyExpenses = 42100;
+        incomeTrend = "+18.2%";
+        expenseTrend = "-42.5%";
+
+        const mockPerformance = [];
+        let curExpense = 80000;
+        let curIncome = 10000;
+
+        for (let i = 30; i >= 0; i--) {
+            const dateStr = new Date(now.getTime() - i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+
+            // Emulating the drop in expenses (the solid line)
+            if (i < 5) curExpense *= 0.6; // sharp drop at end
+            else if (i < 15) curExpense *= 0.9;
+            else if (i < 25) curExpense *= 0.98;
+
+            // Emulating the exponential growth in income (the dotted line)
+            if (i < 10) curIncome *= 1.25;
+            else if (i < 20) curIncome *= 1.1;
+            else curIncome *= 1.05;
+
+            mockPerformance.push({
+                date: dateStr,
+                income: curIncome + (Math.random() * 2000),
+                expenses: curExpense + ((Math.random() - 0.5) * 5000),
+            });
+        }
+        cashFlowPerformance = mockPerformance;
+
+        topSpendingCategories = [
+            { name: "Server Infrastructure", amount: 15400, percentage: "36%" },
+            { name: "Software Subscriptions", amount: 12500, percentage: "29%" },
+            { name: "Office Assets", amount: 8200, percentage: "19%" }
+        ];
+
+        recentTransactions = [
+            { id: "mock-1", description: "AWS Cloud Hosting", category: "Infrastructure", status: "Completed", amount: -4500, date: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-2", description: "Client Retainer - Q3", category: "Income", status: "Completed", amount: 125000, date: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' },
+            { id: "mock-3", description: "Figma Teams Subscription", category: "Software", status: "Completed", amount: -1200, date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-4", description: "Upwork Escrow Funding", category: "Contractors", status: "Pending", amount: -15000, date: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
+            { id: "mock-5", description: "Monthly AdSense Revenue", category: "Income", status: "Completed", amount: 28400, date: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' }
+        ] as any[];
+    }
 
     useEffect(() => {
         if (viewRef.current) {
@@ -131,7 +179,7 @@ export function DashboardClient() {
                     <div ref={viewRef} className="max-w-6xl mx-auto space-y-12">
 
                         {/* 1. Net Worth Summary - Redesigned to lime green project card theme */}
-                        <div className="flex flex-col bg-gradient-to-br from-black/80 to-white/20 backdrop-blur-2xl border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] rounded-[32px] p-6 sm:p-8 md:p-10 hover:shadow-soft-lg transition-all duration-300 relative overflow-hidden">
+                        <div className="flex flex-col bg-gradient-to-br from-black/80 to-white/20 backdrop-blur-2xl ring-1 ring-inset ring-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] rounded-[32px] p-6 sm:p-8 md:p-10 hover:shadow-soft-lg transition-all duration-300 relative overflow-hidden">
                             {/* Glass shine overlay */}
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 to-transparent"></div>
                             <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(100%_40%_at_50%_0%,rgba(255,255,255,0.3),rgba(255,255,255,0))]"></div>
@@ -168,13 +216,13 @@ export function DashboardClient() {
                         {/* 2. Quick Finance Metrics */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                             {[
-                                { title: "Net Balance", value: `₹${netWorth.toLocaleString()}`, trend: "Live Data", isPositive: true, icon: Landmark, cardColor: "bg-white", iconBg: "bg-gray-50 text-gray-700" },
-                                { title: "30-Day Income", value: `₹${monthlyIncome.toLocaleString()}`, trend: incomeTrend, isPositive: parseFloat(incomeTrend) >= 0, icon: TrendingUp, cardColor: "bg-white", iconBg: "bg-accent/30 text-green-700" },
-                                { title: "30-Day Expenses", value: `₹${monthlyExpenses.toLocaleString()}`, trend: expenseTrend, isPositive: parseFloat(expenseTrend) <= 0, icon: TrendingDown, cardColor: "bg-white", iconBg: "bg-red-50 text-red-600" },
+                                { title: "Net Balance", value: `₹${netWorth.toLocaleString()}`, trend: "Live Data", isPositive: true, icon: Landmark, cardColor: "bg-white", iconBg: "bg-gradient-to-br from-black/80 to-white/20 text-white" },
+                                { title: "30-Day Income", value: `₹${monthlyIncome.toLocaleString()}`, trend: incomeTrend, isPositive: parseFloat(incomeTrend) >= 0, icon: TrendingUp, cardColor: "bg-white", iconBg: "bg-gradient-to-br from-black/80 to-white/20 text-white" },
+                                { title: "30-Day Expenses", value: `₹${monthlyExpenses.toLocaleString()}`, trend: expenseTrend, isPositive: parseFloat(expenseTrend) <= 0, icon: TrendingDown, cardColor: "bg-white", iconBg: "bg-gradient-to-br from-black/80 to-white/20 text-white" },
                             ].map((stat, i) => (
-                                <div key={i} className={`${stat.cardColor} border border-gray-100 shadow-soft p-5 sm:p-6 rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300 relative overflow-hidden`}>
+                                <div key={i} className={`group ${stat.cardColor} border border-gray-100 shadow-soft p-5 sm:p-6 rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300 relative overflow-hidden`}>
                                     <div className="flex justify-between items-start mb-4 sm:mb-6">
-                                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.iconBg} flex items-center justify-center transition-all duration-300`}>
+                                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.iconBg} flex items-center justify-center transition-all duration-300 group-hover:invert`}>
                                             <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                                         </div>
                                         <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-1 rounded-full ${stat.isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
@@ -190,13 +238,13 @@ export function DashboardClient() {
                         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
                             {/* 3. Cash Flow Chart */}
-                            <div className="xl:col-span-2 bg-white border border-gray-100 shadow-soft p-8 rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
+                            <div className="xl:col-span-2 bg-[#0a0a0a] border border-[#222] shadow-soft p-8 rounded-[32px] hover:border-[#333] hover:shadow-soft-lg transition-all duration-300">
                                 <div className="flex items-center justify-between mb-8">
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-900 tracking-tight">Cash Flow</h3>
-                                        <p className="text-xs font-medium text-gray-500 mt-1">Income vs Expenses (Simulated Range)</p>
+                                        <h3 className="text-xl font-bold text-white tracking-tight">Cash Flow</h3>
+                                        <p className="text-xs font-medium text-gray-400 mt-1">Income vs Expenses (Simulated Range)</p>
                                     </div>
-                                    <select className="bg-gray-50 border-none text-sm font-semibold rounded-full px-4 py-2 outline-none cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <select className="bg-[#1a1a1a] text-white border-none text-sm font-semibold rounded-full px-4 py-2 outline-none cursor-pointer hover:bg-[#2a2a2a] transition-colors">
                                         <option>Last 7 days</option>
                                         <option>Last 30 days</option>
                                         <option>This Year</option>
@@ -204,27 +252,20 @@ export function DashboardClient() {
                                 </div>
                                 <div className="h-[280px] w-full mt-4">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={cashFlowPerformance} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                            <defs>
-                                                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3} />
-                                                    <stop offset="95%" stopColor="#84cc16" stopOpacity={0} />
-                                                </linearGradient>
-                                                <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.1} />
-                                                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                                                </linearGradient>
-                                            </defs>
-                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6B7280', fontWeight: '500' }} tickLine={false} axisLine={{ stroke: '#E5E7EB', strokeWidth: 1 }} />
+                                        <LineChart data={cashFlowPerformance} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={false} stroke="#333" />
+                                            <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6B7280', fontWeight: '500' }} tickLine={false} axisLine={false} />
                                             <YAxis tick={{ fontSize: 10, fill: '#6B7280', fontWeight: '500' }} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
                                             <RechartsTooltip
-                                                contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: '#fff', boxShadow: '0 4px 20px -2px rgba(0,0,0,0.1)', fontWeight: 'bold', fontSize: '12px' }}
+                                                contentStyle={{ borderRadius: '12px', border: '1px solid #333', backgroundColor: '#111', color: '#fff', fontWeight: 'bold', fontSize: '12px' }}
+                                                itemStyle={{ color: '#fff' }}
+                                                labelStyle={{ color: '#9CA3AF', marginBottom: '4px' }}
                                                 formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, undefined]}
+                                                cursor={{ stroke: '#6B7280', strokeWidth: 1, strokeDasharray: '4 4' }}
                                             />
-                                            <Area type="monotone" dataKey="income" name="Income" stroke="#84cc16" strokeWidth={3} fillOpacity={1} fill="url(#colorIncome)" />
-                                            <Area type="monotone" dataKey="expenses" name="Expenses" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorExpense)" />
-                                        </AreaChart>
+                                            <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#00E5FF" strokeWidth={2.5} dot={false} activeDot={{ r: 6, fill: '#00E5FF', strokeWidth: 0 }} />
+                                            <Line type="monotone" dataKey="income" name="Income" stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="4 4" dot={{ r: 6, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 8, fill: '#2563EB', strokeWidth: 0 }} />
+                                        </LineChart>
                                     </ResponsiveContainer>
                                 </div>
                             </div>
@@ -240,7 +281,7 @@ export function DashboardClient() {
 
                                 <div className="flex-1 flex flex-col gap-4">
                                     {topSpendingCategories.map((category, i) => {
-                                        const COLORS = ['#000000', '#D1D5DB', '#E8FCC1'];
+                                        const COLORS = ['#000000', '#333333', '#666666'];
                                         const color = COLORS[i % COLORS.length];
                                         return (
                                             <div key={i} className="flex flex-col gap-3">
@@ -316,7 +357,7 @@ export function DashboardClient() {
                                     </tbody>
                                 </table>
                             </div>
-                            {transactions.length === 0 && (
+                            {recentTransactions.length === 0 && (
                                 <div className="py-20 text-center">
                                     <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
                                         <Receipt className="w-8 h-8" />

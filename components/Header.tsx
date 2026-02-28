@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Search, Bell, Menu, LogOut, X, AlertCircle, CheckCircle, Info } from "lucide-react";
+import { Search, Bell, Menu, LogOut, X, AlertCircle, CheckCircle, Info, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { createClient } from "@/utils/supabase/client";
 import { signOut } from "@/app/login/actions";
 import { useFinance, Transaction, Budget } from "@/context/FinanceContext";
@@ -21,10 +22,14 @@ export function Header() {
     const [user, setUser] = useState<any>(null);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const [dismissedNotifs, setDismissedNotifs] = useState<string[]>([]);
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
     const supabase = createClient();
     const { budgets, transactions } = useFinance();
 
     useEffect(() => {
+        setMounted(true);
+
         gsap.fromTo(
             headerRef.current,
             { y: -10, opacity: 0 },
@@ -100,6 +105,17 @@ export function Header() {
             </div>
 
             <div className="flex items-center gap-4 shrink-0">
+                {/* Theme Toggle */}
+                {mounted && (
+                    <button
+                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                        className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-[#1a1a1a] shadow-soft hover:shadow-soft-lg text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-all overflow-hidden"
+                    >
+                        <Sun className={`w-5 h-5 transition-transform duration-300 absolute ${theme === 'dark' ? 'translate-y-10 opacity-0' : 'translate-y-0 opacity-100'}`} />
+                        <Moon className={`w-5 h-5 transition-transform duration-300 absolute ${theme === 'dark' ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`} />
+                    </button>
+                )}
+
                 <div className="relative" ref={notifRef}>
                     <button
                         onClick={() => setIsNotifOpen((prev) => !prev)}
