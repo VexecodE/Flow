@@ -5,6 +5,7 @@ from insights import insights_router
 from reminders import reminder_router
 from chatbot import router as chatbot_router
 from ml import router as ml_router
+from resume.routes import router as resume_router
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -37,6 +38,7 @@ app.include_router(insights_router, prefix="/api")
 app.include_router(reminder_router, prefix="/api")
 app.include_router(chatbot_router, prefix="/api")
 app.include_router(ml_router, prefix="/api")
+app.include_router(resume_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")

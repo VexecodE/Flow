@@ -223,3 +223,77 @@ export async function checkBackendHealth(): Promise<boolean> {
         return false;
     }
 }
+
+// ==================== Resume Parsing API ====================
+
+export interface ParsedEducation {
+    institution: string;
+    degree: string;
+    year: string;
+}
+
+export interface ParsedExperience {
+    title: string;
+    description: string;
+}
+
+export interface ParsedSkillCategory {
+    category: string;
+    skills: string[];
+}
+
+export interface ParsedResumeData {
+    name?: string;
+    role?: string;
+    email?: string;
+    location?: string;
+    phone?: string;
+    aboutMe?: string;
+    education: ParsedEducation[];
+    experience: ParsedExperience[];
+    skillCategories: ParsedSkillCategory[];
+}
+
+export interface ResumeParseResponse {
+    success: boolean;
+    message: string;
+    data?: ParsedResumeData;
+}
+
+/**
+ * Resume Parsing Service
+ */
+export const resumeAPI = {
+    /**
+     * Parse resume file (PDF or DOCX) and extract structured data
+     */
+    async parseResume(file: File): Promise<ResumeParseResponse> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${API_BASE_URL}/api/resume/parse`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to parse resume');
+        }
+
+        return response.json();
+    },
+
+    /**
+     * Health check for resume parser service
+     */
+    async health(): Promise<{ status: string; service: string }> {
+        const response = await fetch(`${API_BASE_URL}/api/resume/health`);
+        
+        if (!response.ok) {
+            throw new Error('Resume parser service is unavailable');
+        }
+        
+        return response.json();
+    },
+};

@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import {
   Home,
-  Settings,
   BarChart2,
   Wallet,
   ReceiptText,
@@ -38,7 +37,7 @@ export function Sidebar() {
     { icon: Target, label: "Credibility Score", href: "/credit" },
     { icon: ShoppingBag, label: "Marketplace", href: "/marketplace" },
     { icon: CalendarDays, label: "Calendar", href: "/calendar" },
-    { icon: Settings, label: "Settings", href: "#" },
+
     { icon: User, label: "Profile", href: "/profile" },
   ];
 

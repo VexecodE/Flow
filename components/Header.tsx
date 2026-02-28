@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Search, Bell, Menu, LogOut, X, AlertCircle, CheckCircle, Info, Sun, Moon } from "lucide-react";
+import { Search, Bell, Menu, LogOut, X, AlertCircle, CheckCircle, Info, Sun, Moon, User as UserIcon, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
 import { createClient } from "@/utils/supabase/client";
 import { signOut } from "@/app/login/actions";
 import { useFinance, Transaction, Budget } from "@/context/FinanceContext";
+import { SettingsModal } from "./SettingsModal";
 
 interface AppNotification {
     id: string;
@@ -19,8 +20,11 @@ interface AppNotification {
 export function Header() {
     const headerRef = useRef<HTMLElement>(null);
     const notifRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
     const [user, setUser] = useState<any>(null);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [dismissedNotifs, setDismissedNotifs] = useState<string[]>([]);
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -46,6 +50,9 @@ export function Header() {
         const handleClickOutside = (event: MouseEvent) => {
             if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
                 setIsNotifOpen(false);
+            }
+            if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+                setIsProfileOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -190,42 +197,94 @@ export function Header() {
                     )}
                 </div>
 
-                <div className="flex items-center gap-3 bg-white shadow-soft rounded-full pl-3 pr-1 py-1 border border-gray-50">
-                    <div className="text-right hidden sm:block px-2">
-                        <p className="text-sm font-semibold text-black leading-tight max-w-[120px] truncate">
-                            {user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Guest"}
-                        </p>
-                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                            {user ? "Pro User" : "Visitor"}
-                        </p>
-                    </div>
+                <div className="relative" ref={profileRef}>
+                    <button
+                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                        className={`flex items-center gap-3 rounded-full pl-3 pr-1 py-1 border transition-all ${
+                            isProfileOpen 
+                                ? 'bg-gray-100 border-gray-200 shadow-inner' 
+                                : 'bg-white border-gray-50 shadow-soft hover:shadow-soft-lg'
+                        }`}
+                    >
+                        <div className="text-right hidden sm:block px-2">
+                            <p className="text-sm font-semibold text-black leading-tight max-w-[120px] truncate">
+                                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Guest"}
+                            </p>
+                            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+                                {user ? "Pro User" : "Visitor"}
+                            </p>
+                        </div>
 
-                    <div className="flex items-center gap-2">
-                        {user?.user_metadata?.avatar_url ? (
-                            <img src={user.user_metadata.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
-                        ) : (
-                            <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-                                <span className="text-white text-xs font-bold font-kol">
-                                    {user?.user_metadata?.full_name?.[0].toUpperCase() || user?.email?.[0].toUpperCase() || "G"}
-                                </span>
+                        <div className="flex items-center gap-2">
+                            {user?.user_metadata?.avatar_url ? (
+                                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+                                    <span className="text-white text-xs font-bold font-kol">
+                                        {user?.user_metadata?.full_name?.[0].toUpperCase() || user?.email?.[0].toUpperCase() || "G"}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </button>
+
+                    {/* Profile Dropdown */}
+                    {isProfileOpen && (
+                        <div className="absolute top-full mt-3 right-0 w-64 bg-white/70 backdrop-blur-xl shadow-soft-xl rounded-2xl border border-white/50 overflow-hidden z-50 transition-all duration-200 origin-top-right">
+                            <div className="p-2 space-y-1">
+                                <button
+                                    onClick={() => {
+                                        setIsProfileOpen(false);
+                                        window.location.href = '/profile';
+                                    }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/60 transition-colors text-left group"
+                                >
+                                    <UserIcon className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors" />
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-900">Profile</p>
+                                        <p className="text-xs text-gray-500">View your profile</p>
+                                    </div>
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setIsProfileOpen(false);
+                                        setIsSettingsOpen(true);
+                                    }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/60 transition-colors text-left group"
+                                >
+                                    <Settings className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors" />
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-900">Settings</p>
+                                        <p className="text-xs text-gray-500">Manage preferences</p>
+                                    </div>
+                                </button>
+
+                                <div className="h-px bg-gray-100 my-1"></div>
+
+                                {user && (
+                                    <button
+                                        onClick={async () => {
+                                            setIsProfileOpen(false);
+                                            setUser(null);
+                                            await signOut();
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors text-left group"
+                                    >
+                                        <LogOut className="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" />
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900 group-hover:text-red-500 transition-colors">Logout</p>
+                                            <p className="text-xs text-gray-500">Sign out of your account</p>
+                                        </div>
+                                    </button>
+                                )}
                             </div>
-                        )}
-
-                        {user && (
-                            <button
-                                onClick={async () => {
-                                    setUser(null);
-                                    await signOut();
-                                }}
-                                className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300"
-                                title="Logout"
-                            >
-                                <LogOut className="w-4 h-4" />
-                            </button>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </header>
     );
 }

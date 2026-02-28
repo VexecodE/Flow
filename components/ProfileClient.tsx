@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import SocialFlipButton from "@/components/ui/social-flip-button";
 import { StackedLogos } from "@/components/ui/stacked-logos";
+import { ResumeUploadModal } from "./ResumeUploadModal";
+import { ParsedResumeData } from "@/lib/api";
 
 interface SkillCategory {
     category: string;
@@ -66,6 +68,10 @@ export function ProfileClient() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [isParsing, setIsParsing] = useState(false);
+    const [parseSuccess, setParseSuccess] = useState(false);
+    const [parseError, setParseError] = useState<string | null>(null);
+    const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
     const [profile, setProfile] = useState<ProfileData>({
         name: "John Wick",
@@ -119,13 +125,90 @@ export function ProfileClient() {
         setTimeout(() => setSaveSuccess(false), 2000);
     };
 
-    const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleParsedResume = (data: ParsedResumeData) => {
+        setEditData(prev => ({
+            ...prev,
+            name: data.name || prev.name,
+            role: data.role || prev.role,
+            email: data.email || prev.email,
+            location: data.location || prev.location,
+            phone: data.phone || prev.phone,
+            aboutMe: data.aboutMe || prev.aboutMe,
+            education: data.education && data.education.length > 0 ? data.education : prev.education,
+            experience: data.experience && data.experience.length > 0 ? data.experience : prev.experience,
+            skillCategories: data.skillCategories && data.skillCategories.length > 0 ? data.skillCategories : prev.skillCategories,
+        }));
+        setIsEditing(true);
+        setParseSuccess(true);
+        setTimeout(() => setParseSuccess(false), 3000);
+    };
+
+    const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setEditData(prev => ({ ...prev, resumeFile: file.name }));
-            if (!isEditing) {
-                setProfile(prev => ({ ...prev, resumeFile: file.name }));
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
+        if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|docx|doc)$/i)) {
+            setParseError("Please upload a PDF or DOCX file");
+            return;
+        }
+
+        // Validate file size (10MB max)
+        if (file.size > 10 * 1024 * 1024) {
+            setParseError("File size must be less than 10MB");
+            return;
+        }
+
+        setIsParsing(true);
+        setParseError(null);
+        setParseSuccess(false);
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('http://localhost:8000/api/resume/parse', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to parse resume');
             }
+
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+                // Auto-fill profile with parsed data
+                setEditData(prev => ({
+                    ...prev,
+                    name: result.data.name || prev.name,
+                    role: result.data.role || prev.role,
+                    email: result.data.email || prev.email,
+                    location: result.data.location || prev.location,
+                    phone: result.data.phone || prev.phone,
+                    aboutMe: result.data.aboutMe || prev.aboutMe,
+                    education: result.data.education.length > 0 ? result.data.education : prev.education,
+                    experience: result.data.experience.length > 0 ? result.data.experience : prev.experience,
+                    skillCategories: result.data.skillCategories.length > 0 ? result.data.skillCategories : prev.skillCategories,
+                    resumeFile: file.name
+                }));
+
+                setIsEditing(true);
+                setParseSuccess(true);
+                setTimeout(() => setParseSuccess(false), 3000);
+            } else {
+                throw new Error('Invalid response from server');
+            }
+        } catch (error) {
+            console.error('Resume parsing error:', error);
+            setParseError(error instanceof Error ? error.message : 'Failed to parse resume');
+            // Still save the filename even if parsing fails
+            setEditData(prev => ({ ...prev, resumeFile: file.name }));
+        } finally {
+            setIsParsing(false);
         }
     };
 
@@ -603,55 +686,35 @@ export function ProfileClient() {
                                 <div className="bg-white border border-gray-100 shadow-soft rounded-[32px] p-6 sm:p-8 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
                                     <h2 className="text-lg font-bold text-gray-900 tracking-tight mb-4 flex items-center gap-2">
                                         <FileText className="w-5 h-5 text-gray-900" />
-                                        Resume
+                                        Resume Parser
                                     </h2>
 
-                                    <input
-                                        ref={resumeInputRef}
-                                        type="file"
-                                        accept=".pdf,.doc,.docx"
-                                        onChange={handleResumeUpload}
-                                        className="hidden"
-                                    />
-
-                                    {currentData.resumeFile ? (
-                                        <div className="space-y-4">
-                                            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
-                                                    <FileText className="w-6 h-6 text-gray-900" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-gray-900 truncate">{currentData.resumeFile}</p>
-                                                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-0.5">Uploaded resume</p>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => resumeInputRef.current?.click()}
-                                                        className="text-xs font-bold text-gray-900 hover:text-black transition-colors px-3 py-1.5 bg-gray-100 rounded-lg"
-                                                    >
-                                                        Replace
-                                                    </button>
-                                                    <button
-                                                        onClick={removeResume}
-                                                        className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors px-3 py-1.5 bg-red-50 rounded-lg"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
+                                    {/* Success Message */}
+                                    {parseSuccess && (
+                                        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                                                <Check className="w-5 h-5 text-white" />
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div
-                                            onClick={() => resumeInputRef.current?.click()}
-                                            className="flex flex-col items-center justify-center py-10 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all group"
-                                        >
-                                            <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                                <Upload className="w-6 h-6 text-gray-900" />
+                                            <div>
+                                                <p className="text-sm font-bold text-green-900">Resume parsed successfully!</p>
+                                                <p className="text-xs text-green-700 mt-0.5">Your profile has been auto-filled. Review and save changes.</p>
                                             </div>
-                                            <p className="text-sm font-bold text-gray-700 mb-1">Upload your resume</p>
-                                            <p className="text-xs text-gray-400 font-medium">PDF, DOC, or DOCX — Max 10MB</p>
                                         </div>
                                     )}
+
+                                    {/* Upload Button */}
+                                    <button
+                                        onClick={() => setIsResumeModalOpen(true)}
+                                        className="w-full flex items-center justify-center gap-3 py-6 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all group"
+                                    >
+                                        <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Upload className="w-6 h-6 text-gray-900" />
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-sm font-bold text-gray-700">Upload Resume</p>
+                                            <p className="text-xs text-gray-400 font-medium">Auto-fill profile from PDF or DOCX</p>
+                                        </div>
+                                    </button>
                                 </div>
 
                                 {/* Quick Stats — Cycling Animation */}
@@ -709,6 +772,13 @@ export function ProfileClient() {
                     </div>
                 </main>
             </div>
+
+            {/* Resume Upload Modal */}
+            <ResumeUploadModal
+                isOpen={isResumeModalOpen}
+                onClose={() => setIsResumeModalOpen(false)}
+                onApply={handleParsedResume}
+            />
         </div>
     );
 }
