@@ -18,9 +18,12 @@ import {
     MoreHorizontal,
     FileText,
     ChevronDown,
-    Send
+    Send,
+    ShoppingCart,
+    Star,
+    Package
 } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, Legend, LabelList } from 'recharts';
+import { BarChart, Bar, Legend, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 import { useFinance, Transaction } from "@/context/FinanceContext";
 
@@ -31,7 +34,7 @@ export function DashboardClient() {
     // --- Dynamic Calculations ---
 
     // 1. Net Worth (Total balance across all accounts)
-    let netWorth = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    let netWorth = accounts.length > 0 ? accounts.reduce((sum, acc) => sum + acc.balance, 0) : 84112;
 
     // 2. Total Assets (Cash + Digital Assets)
     let totalAssets = accounts.filter(a => a.type !== 'Credit Card').reduce((sum, a) => sum + a.balance, 0);
@@ -68,38 +71,35 @@ export function DashboardClient() {
             ? `Cash flow is positive this period with a net surplus of ₹${netCashFlow.toLocaleString()}.`
             : `You spent ₹${Math.abs(netCashFlow).toLocaleString()} more than your income this period.`;
 
-    // 5. Cash Flow Area Chart Data
-    // Group by date (simplified aggregation)
-    const cashFlowMap = new Map();
-    transactions.forEach(txn => {
-        const date = new Date(txn.date).toLocaleDateString('en-US', { weekday: 'short' }); // e.g., 'Mon'
-        if (!cashFlowMap.has(date)) {
-            cashFlowMap.set(date, { date, income: 0, expenses: 0 });
-        }
-        const current = cashFlowMap.get(date);
-        if (txn.amount > 0) current.income += txn.amount;
-        else current.expenses += Math.abs(txn.amount);
-    });
-    // Array format for Recharts
-    let cashFlowPerformance = Array.from(cashFlowMap.values()).reverse(); // Reverse to read chronologically loosely
-
     // 6. Top Spending Categories
     const categoryTotals = transactions.filter(t => t.amount < 0).reduce((acc, txn) => {
         acc[txn.category] = (acc[txn.category] || 0) + Math.abs(txn.amount);
         return acc;
     }, {} as Record<string, number>);
 
-    let topSpendingCategories = Object.entries(categoryTotals)
+    let topSpendingCategories: { name: string; amount: number; percentage: string }[] = Object.entries(categoryTotals)
         .map(([name, amount]) => ({
             name,
             amount,
             percentage: Math.min((amount / monthlyExpenses) * 100, 100).toFixed(0) + '%'
         }))
         .sort((a, b) => b.amount - a.amount)
-        .slice(0, 3); // Top 3
+        .slice(0, 6); // Top 6
 
-    // 7. Recent Transactions (Top 5)
-    let recentTransactions = transactions.slice(0, 5);
+    // Fill with demo categories if fewer than 6
+    const demoPadding: { name: string; amount: number; percentage: string }[] = [
+        { name: "Server Infrastructure", amount: 15400, percentage: "36%" },
+        { name: "Software Subscriptions", amount: 12500, percentage: "29%" },
+        { name: "Office Assets", amount: 8200, percentage: "19%" },
+        { name: "Freelancer Payments", amount: 3800, percentage: "9%" },
+        { name: "Marketing & Ads", amount: 1700, percentage: "4%" },
+        { name: "Travel & Meals", amount: 500, percentage: "1%" },
+    ];
+    if (topSpendingCategories.length < 6) {
+        const existingNames = new Set(topSpendingCategories.map(c => c.name));
+        const fillers = demoPadding.filter(d => !existingNames.has(d.name));
+        topSpendingCategories = [...topSpendingCategories, ...fillers].slice(0, 6);
+    }
 
     // --- Mock Data Injection for Empty Accounts / Demo display ---
     if (transactions.length === 0) {
@@ -109,53 +109,22 @@ export function DashboardClient() {
         incomeTrend = "+18.2%";
         expenseTrend = "-42.5%";
 
-        const mockPerformance = [];
-        let curExpense = 80000;
-        let curIncome = 10000;
-
-        for (let i = 30; i >= 0; i--) {
-            const dateStr = new Date(now.getTime() - i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
-
-            // Emulating the drop in expenses (the solid line)
-            if (i < 5) curExpense *= 0.6; // sharp drop at end
-            else if (i < 15) curExpense *= 0.9;
-            else if (i < 25) curExpense *= 0.98;
-
-            // Emulating the exponential growth in income (the dotted line)
-            if (i < 10) curIncome *= 1.25;
-            else if (i < 20) curIncome *= 1.1;
-            else curIncome *= 1.05;
-
-            mockPerformance.push({
-                date: dateStr,
-                income: curIncome + (Math.random() * 2000),
-                expenses: curExpense + ((Math.random() - 0.5) * 5000),
-                expenseLabel: (i % 6 === 0) ? (curExpense + ((Math.random() - 0.5) * 5000)) : null,
-                incomeLabel: (i % 5 === 0) ? (curIncome + (Math.random() * 2000)) : null
-            });
-        }
-        cashFlowPerformance = mockPerformance;
-
         topSpendingCategories = [
             { name: "Server Infrastructure", amount: 15400, percentage: "36%" },
             { name: "Software Subscriptions", amount: 12500, percentage: "29%" },
-            { name: "Office Assets", amount: 8200, percentage: "19%" }
+            { name: "Office Assets", amount: 8200, percentage: "19%" },
+            { name: "Freelancer Payments", amount: 3800, percentage: "9%" },
+            { name: "Marketing & Ads", amount: 1700, percentage: "4%" },
+            { name: "Travel & Meals", amount: 500, percentage: "1%" }
         ];
 
-        recentTransactions = [
-            { id: "mock-1", description: "AWS Cloud Hosting", category: "Infrastructure", status: "Completed", amount: -4500, date: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
-            { id: "mock-2", description: "Client Retainer - Q3", category: "Income", status: "Completed", amount: 125000, date: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' },
-            { id: "mock-3", description: "Figma Teams Subscription", category: "Software", status: "Completed", amount: -1200, date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
-            { id: "mock-4", description: "Upwork Escrow Funding", category: "Contractors", status: "Pending", amount: -15000, date: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), type: 'Expense' },
-            { id: "mock-5", description: "Monthly AdSense Revenue", category: "Income", status: "Completed", amount: 28400, date: new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString(), type: 'Income' }
-        ] as any[];
     }
 
-    const mockRevenueData = [
-        { name: "W1", Product: 4000, Agency: 2400 },
-        { name: "W2", Product: 4500, Agency: 1398 },
-        { name: "W3", Product: 2000, Agency: 9800 },
-        { name: "W4", Product: 6780, Agency: 8908 },
+    const suggestedProducts = [
+        { title: "SaaS Admin Dashboard", category: "Templates", price: "$49", rating: 4.8, sales: 120, image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=200&h=200" },
+        { title: "Advanced Auth Hook", category: "Scripts", price: "$19", rating: 4.9, sales: 340, image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=200&h=200" },
+        { title: "Fintech UI Kit Pro", category: "UI Kits", price: "$79", rating: 5.0, sales: 85, image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=200&h=200" },
+        { title: "E-Commerce Wrapper", category: "Backend", price: "$29", rating: 4.7, sales: 210, image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=200&h=200" }
     ];
 
     useEffect(() => {
@@ -244,167 +213,93 @@ export function DashboardClient() {
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <div className="mt-6">
 
-                            {/* 3. Cash Flow Chart */}
-                            <div className="xl:col-span-2 bg-[#0a0a0a] border border-[#222] shadow-soft p-8 rounded-[32px] hover:border-[#333] hover:shadow-soft-lg transition-all duration-300">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-white tracking-tight">Cash Flow</h3>
-                                        <p className="text-xs font-medium text-gray-400 mt-1">Income vs Expenses (Simulated Range)</p>
-                                    </div>
-                                    <select className="bg-[#1a1a1a] text-white border-none text-sm font-semibold rounded-full px-4 py-2 outline-none cursor-pointer hover:bg-[#2a2a2a] transition-colors">
-                                        <option>Last 7 days</option>
-                                        <option>Last 30 days</option>
-                                        <option>This Year</option>
-                                    </select>
-                                </div>
-                                <div className="h-[280px] w-full mt-4">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={cashFlowPerformance} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                            <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={false} stroke="#333" />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6B7280', fontWeight: '500' }} tickLine={false} axisLine={false} />
-                                            <YAxis tick={{ fontSize: 10, fill: '#6B7280', fontWeight: '500' }} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
-                                            <RechartsTooltip
-                                                contentStyle={{ borderRadius: '12px', border: '1px solid #333', backgroundColor: '#111', color: '#fff', fontWeight: 'bold', fontSize: '12px' }}
-                                                itemStyle={{ color: '#fff' }}
-                                                labelStyle={{ color: '#9CA3AF', marginBottom: '4px' }}
-                                                formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, undefined]}
-                                                cursor={{ stroke: '#6B7280', strokeWidth: 1, strokeDasharray: '4 4' }}
-                                            />
-                                            <Line type="monotone" dataKey="expenses" name="Expenses" stroke="#00E5FF" strokeWidth={2.5} dot={false} activeDot={{ r: 6, fill: '#00E5FF', strokeWidth: 0 }}>
-                                                <LabelList dataKey="expenseLabel" position="top" fill="#ffffff" fontSize={11} fontWeight="bold" formatter={(v: any) => v ? `₹${(v / 1000).toFixed(1)}k` : ''} offset={12} />
-                                            </Line>
-                                            <Line type="monotone" dataKey="income" name="Income" stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="4 4" dot={{ r: 6, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 8, fill: '#2563EB', strokeWidth: 0 }}>
-                                                <LabelList dataKey="incomeLabel" position="bottom" fill="#9CA3AF" fontSize={11} fontWeight="bold" formatter={(v: any) => v ? `₹${(v / 1000).toFixed(1)}k` : ''} offset={12} />
-                                            </Line>
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-
-                            {/* 4. Top Spending Categories */}
+                            {/* 3. Top Spending Categories (formerly 4) */}
                             <div className="bg-white border border-gray-100 shadow-soft p-8 flex flex-col rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
-                                <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center justify-between mb-6">
                                     <h3 className="text-xl font-bold text-gray-900 tracking-tight">Top Spent</h3>
-                                    <button className="bg-gray-50 text-gray-500 p-2 rounded-full hover:bg-gray-100 hover:text-black transition-colors">
-                                        <ArrowRight className="w-4 h-4" />
+                                    <button className="text-xs font-bold text-gray-500 hover:text-black transition-colors flex items-center gap-1 uppercase tracking-wider">
+                                        View All <ArrowRight className="w-3 h-3" />
                                     </button>
                                 </div>
 
                                 <div className="flex-1 flex flex-col gap-4">
                                     {topSpendingCategories.map((category, i) => {
-                                        const COLORS = ['#000000', '#333333', '#666666'];
+                                        const COLORS = ['#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080'];
                                         const color = COLORS[i % COLORS.length];
                                         return (
-                                            <div key={i} className="flex flex-col gap-3">
+                                            <div key={i} className="flex flex-col gap-2.5 group">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
+                                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 text-lg group-hover:scale-105 transition-transform">
                                                             <Receipt className="w-4 h-4 text-gray-500" />
                                                         </div>
-                                                        <h4 className="text-sm font-semibold text-gray-900 truncate">{category.name}</h4>
+                                                        <div>
+                                                            <h4 className="text-sm font-semibold text-gray-900 truncate">{category.name}</h4>
+                                                            <span className="text-[10px] font-bold text-gray-400 uppercase">{category.percentage}</span>
+                                                        </div>
                                                     </div>
                                                     <p className="text-sm font-bold text-gray-900">₹{category.amount.toLocaleString()}</p>
                                                 </div>
-                                                <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                                <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                                                     <div className="h-full rounded-full transition-all duration-1000" style={{ width: category.percentage, backgroundColor: color }}></div>
                                                 </div>
                                             </div>
                                         )
                                     })}
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* 5. Recent Transactions */}
-                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] mt-6 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                                <h3 className="text-xl font-bold text-gray-900 tracking-tight">Recent Transactions</h3>
-                                <button className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-2 w-fit" onClick={() => window.location.href = '/ledger'}>
-                                    Go to Ledger <ArrowRight className="w-4 h-4" />
-                                </button>
-                            </div>
-                            <div className="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0">
-                                <table className="w-full text-left border-separate border-spacing-y-2 min-w-[600px] sm:min-w-0">
-                                    <thead>
-                                        <tr className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-6">
-                                            <th className="px-6 py-2">Entity / Description</th>
-                                            <th className="px-6 py-2">Category</th>
-                                            <th className="px-6 py-2">Status</th>
-                                            <th className="px-6 py-2 text-right">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y-0">
-                                        {recentTransactions.map((txn, i) => (
-                                            <tr key={i} className="hover:bg-gray-50 transition-all group rounded-2xl">
-                                                <td className="px-6 py-4 bg-gray-50/30 first:rounded-l-2xl">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${txn.amount > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                                                            {txn.amount > 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <span className="text-sm font-bold text-gray-900 line-clamp-1">{txn.description}</span>
-                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-tight">{new Date(txn.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 bg-gray-50/30">
-                                                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-white border border-gray-100 px-3 py-1.5 rounded-full shadow-sm">
-                                                        {txn.category}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 bg-gray-50/30">
-                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter ${txn.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${txn.status === 'Completed' ? 'bg-green-500' : 'bg-amber-500'} animate-pulse`}></span>
-                                                        {txn.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 bg-gray-50/30 last:rounded-r-2xl text-right">
-                                                    <span className={`font-space font-bold text-base ${txn.amount > 0 ? 'text-green-600' : 'text-gray-900'}`}>
-                                                        {txn.amount > 0 ? '+' : ''}₹{Math.abs(txn.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            {recentTransactions.length === 0 && (
-                                <div className="py-20 text-center">
-                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                                        <Receipt className="w-8 h-8" />
-                                    </div>
-                                    <p className="text-gray-500 font-semibold text-sm">No transactions found.</p>
-                                    <button className="mt-4 text-primary text-xs font-bold hover:underline" onClick={() => window.location.href = '/ledger'}>Add your first entry &rarr;</button>
+                                {/* Total */}
+                                <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>
+                                    <span className="text-lg font-black text-gray-900">₹{topSpendingCategories.reduce((s, c) => s + c.amount, 0).toLocaleString()}</span>
                                 </div>
-                            )}
+                            </div>
                         </div>
 
-                        {/* 6. Revenue Breakdown (Sample Graph) */}
-                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] mt-6 hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300">
-                            <div className="flex items-center justify-between mb-8">
+                        {/* 6. Marketplace Suggested Products */}
+                        <div className="bg-white border border-gray-100 shadow-soft p-6 sm:p-8 rounded-[32px] hover:border-gray-300 hover:shadow-soft-lg transition-all duration-300 flex flex-col mt-6">
+                            <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 tracking-tight">Revenue Breakdown (Sample)</h3>
-                                    <p className="text-xs font-medium text-gray-500 mt-1">Product Sales vs Agency Services</p>
+                                    <h3 className="text-xl font-bold text-gray-900 tracking-tight">Suggested for You</h3>
+                                    <p className="text-xs font-medium text-gray-500 mt-1">Based on your recent activity</p>
+                                </div>
+                                <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center shrink-0">
+                                    <ShoppingCart className="w-5 h-5 text-gray-900" />
                                 </div>
                             </div>
-                            <div className="h-[300px] w-full mt-4">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={mockRevenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barSize={32}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                        <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6B7280', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
-                                        <YAxis tick={{ fontSize: 10, fill: '#6B7280', fontWeight: 'bold' }} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
-                                        <RechartsTooltip
-                                            contentStyle={{ borderRadius: '12px', border: '1px solid #F3F4F6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', color: '#111827', fontWeight: 'bold', fontSize: '12px' }}
-                                            cursor={{ fill: '#F9FAFB' }}
-                                        />
-                                        <Legend wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', color: '#374151' }} />
-                                        <Bar dataKey="Product" stackId="a" fill="#000000" radius={[0, 0, 4, 4]} />
-                                        <Bar dataKey="Agency" stackId="a" fill="#2563EB" radius={[4, 4, 0, 0]} />
-                                    </BarChart>
-                                </ResponsiveContainer>
+
+                            <div className="flex-1 flex flex-col gap-3">
+                                {suggestedProducts.map((product, i) => (
+                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-colors cursor-pointer group">
+                                        <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform">
+                                            <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-bold text-gray-900 truncate mb-0.5 group-hover:text-black transition-colors">{product.title}</h4>
+                                            <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                <span>{product.category}</span>
+                                                <div className="flex items-center gap-0.5 text-gray-500">
+                                                    <Star className="w-3 h-3 fill-gray-900 text-gray-900" />
+                                                    {product.rating}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="text-right shrink-0">
+                                            <div className="text-sm font-black text-gray-900 mb-0.5">{product.price}</div>
+                                            <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{product.sales} sold</div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
+
+                            <button
+                                className="mt-4 w-full py-3.5 bg-gray-900 hover:bg-black text-white text-sm font-bold rounded-xl transition-colors shadow-soft focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                                onClick={() => window.location.href = '/marketplace'}
+                            >
+                                Explore Marketplace
+                            </button>
                         </div>
 
                     </div>
